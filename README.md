@@ -17,7 +17,7 @@ If you want to leave OMORI, do **NOT** close the tab instantly! Send me a log
 
 - [OMORI](https://store.steampowered.com/app/1150690/OMORI)
 - [Node.js](https://nodejs.org) (Select LTS)
-- pnpm: `npm install -g pnpm`
+- pnpm: run `npm install -g pnpm` in command line
 
 # Installing
 
@@ -45,4 +45,11 @@ If you want to leave OMORI, do **NOT** close the tab instantly! Send me a log
 
 Tested with Chrome 118.0.5993.118 and Firefox 119.0
 
-OneLoader isn't supported _yet_
+OneLoader isn't supported yet
+
+OneLoader state:
+
+- boots
+- patches text, plugins, ...
+- doesn't patches assets (images/fonts/etc)
+- - OneLoader's vfs_web uses the `chrome.debugger` API, which is available only for extensions/nw.js
