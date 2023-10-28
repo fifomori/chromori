@@ -1,5 +1,3 @@
-process.platform = process.env._PLATFORM;
-process.versions = { nw: "0.29.0" };
 process.mainModule = {
   filename: require("path").join(process.env._DIRNAME, "www", "index.html"),
 };

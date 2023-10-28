@@ -59,7 +59,6 @@ globalThis.require = (id) => {
 
     let context = { module: { exports: {} } };
     evalInContext(Buffer.from(file), context);
-    console.log(context);
     return context;
   }
 
@@ -69,7 +68,11 @@ globalThis.require = (id) => {
   return module;
 };
 
-// Base process, expanded later in misc.js
+// expanded later in misc.js
 globalThis.process = {
   env: JSON.parse(chromori.fetchSync("/env")),
 };
+
+process.platform = process.env._PLATFORM;
+process.versions = { nw: "0.29.0" };
+process.cwd = () => process.env._DIRNAME;
