@@ -1,0 +1,9 @@
+node_modules
+chromori_web/bundle.js
+
+# OMORI files
+www
+.oneloader-image-cache
+
+# OMORI decryption key
+key
