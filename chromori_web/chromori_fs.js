@@ -52,7 +52,7 @@ __requireCache["fs"] = {
         if (buffer.toString() == "ENOENT") {
           console.log(`readFile('${path}'): error: ENOENT in ${e - s}ms`);
           if (path.includes("CUTSCENE.json")) callback(/* without error */);
-          callback(this._createErrorENOENT());
+          else callback(this._createErrorENOENT());
           return;
         }
 
@@ -64,7 +64,7 @@ __requireCache["fs"] = {
   },
   readFileSync(path, options = "ascii") {
     // HACK: Redirect Steamworks to empty file
-    path = path.replace("Archeia_Steamworks", "--------------------");
+    path = path.replace(/Archeia_Steamworks/gi, "--------------------");
 
     const s = performance.now();
 
@@ -151,4 +151,6 @@ __requireCache["fs"] = {
 
     console.log(`mkdirSync('${path}') in ${e - s}ms`);
   },
+
+  // TODO: unlinkSync
 };
