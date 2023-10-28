@@ -5,6 +5,8 @@ const fs = nfs.promises;
 const express = require("express");
 const bodyParser = require("body-parser");
 
+const patches = require("./patches");
+
 const app = express();
 app.set("etag", false);
 app.use((req, res, next) => {
@@ -50,14 +52,26 @@ app.all("/stat*", async (req, res) => {
 app.all("/readFile*", async (req, res) => {
   let path = req.chromoriPath;
 
-  try {
-    const stat = await fs.stat(path);
-    if (stat.isFile()) {
-      res.contentType("text/plain");
-      nfs.createReadStream(path).pipe(res);
+  const baseName = pp.basename(path).toLowerCase();
+  if (Object.keys(patches).includes(baseName)) {
+    let file = "";
+    try {
+      file = await fs.readFile(path, "utf8");
+    } catch (e) {}
+
+    const patchedFile = patches[baseName](file);
+    console.log(`api: ${req.url} ('${path}'): patched`);
+    res.send(patchedFile);
+  } else {
+    try {
+      const stat = await fs.stat(path);
+      if (stat.isFile()) {
+        res.contentType("text/plain");
+        nfs.createReadStream(path).pipe(res);
+      }
+    } catch (e) {
+      res.send("ENOENT");
     }
-  } catch (e) {
-    res.send("ENOENT");
   }
 });
 
