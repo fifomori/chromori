@@ -5,5 +5,5 @@ chromori_web/bundle.js
 www*
 .oneloader-image-cache
 
-# OMORI decryption key
+argv
 key

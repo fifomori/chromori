@@ -27,13 +27,24 @@ app.use((req, res, next) => {
 app.use(bodyParser.raw({ inflate: true, limit: "50mb", type: () => true }));
 
 app.all("/env", async (req, res) => {
+  let argv = [];
+  try {
+    argv = await fs.readFile("argv", { encoding: "ascii" });
+    argv = argv.split(" ");
+  } catch (e) {
+    console.error(e);
+  }
+
   res.send(
     JSON.stringify({
       LOCALAPPDATA: process.env.LOCALAPPDATA,
       HOME: process.env.HOME,
       _PLATFORM: process.platform,
       _DIRNAME: __dirname,
-      _KEY: await fs.readFile("key", { encoding: "ascii" }),
+      _ARGV: [
+        `--${await fs.readFile("key", { encoding: "ascii" })}`, //
+        ...argv,
+      ],
     })
   );
 });
@@ -102,6 +113,18 @@ app.all("/mkDir*", async (req, res) => {
 
   try {
     await fs.mkdir(path);
+    res.status(200).end();
+  } catch (e) {
+    console.error(e);
+    res.status(500).end();
+  }
+});
+
+app.all("/unlink*", async (req, res) => {
+  let path = req.chromoriPath;
+
+  try {
+    await fs.unlink(path);
     res.status(200).end();
   } catch (e) {
     console.error(e);

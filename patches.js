@@ -6,11 +6,11 @@ const DOMParser = new JSDOM().window.DOMParser;
 module.exports = {
   "index.html"(file) {
     const patches = [
-      "chromori", //
-      "fixes",
+      "chromori",
+      "chromori_preload", //
       "bundle",
-      "chromori_fs",
-      "chromori_misc",
+      "require_cache",
+      "chromori_postload",
     ].reverse();
 
     const doc = new DOMParser().parseFromString(file, "text/html");
@@ -53,6 +53,7 @@ module.exports = {
       }
     };`;
 
+    // copied from OneLoader
     const iv = Buffer.from("EpicGamerMoment!");
     const cipherStream = crypto.createCipheriv(
       "aes-256-ctr",

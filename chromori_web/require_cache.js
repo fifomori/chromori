@@ -1,14 +1,10 @@
-process.mainModule = {
-  filename: require("path").join(process.env._DIRNAME, "www", "index.html"),
-};
-
 __requireCache["os"] = {
   platform: () => process.platform,
 };
 
 __requireCache["nw.gui"] = window.nw = {
   App: {
-    argv: [`--${process.env._KEY}`],
+    argv: process.env._ARGV,
   },
   Screen: {
     Init: () => {},
@@ -23,5 +19,3 @@ __requireCache["nw.gui"] = window.nw = {
     },
   },
 };
-
-globalThis.Buffer = require("buffer").Buffer;

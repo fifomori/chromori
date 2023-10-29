@@ -1,16 +1,17 @@
-__requireCache["fs"] = {
-  /**
-   * @param {string} type
-   */
-  _createStat: (type) => {
-    return {
-      isFile: () => type == "file",
-      isDirectory: () => type == "dir",
-      exists: () => type != "ENOENT",
-    };
-  },
-  _createErrorENOENT: () => new Error("ENOENT"),
+/**
+ * @param {string} type
+ */
+const createStat = (type) => {
+  return {
+    isFile: () => type == "file",
+    isDirectory: () => type == "dir",
+    exists: () => type != "ENOENT",
+  };
+};
 
+const createErrorENOENT = () => new Error("ENOENT");
+
+module.exports = {
   stat(path, callback) {
     if (!callback) return;
 
@@ -19,7 +20,7 @@ __requireCache["fs"] = {
       const e = performance.now();
       console.log(`stat('${path}') ${res} in ${e - s}ms`);
 
-      callback(null, __requireCache["fs"]._createStat(res));
+      callback(null, createStat(res));
     });
   },
   statSync(path) {
@@ -28,7 +29,7 @@ __requireCache["fs"] = {
     const e = performance.now();
 
     console.log(`statSync('${path}') ${data} in ${e - s}ms`);
-    return this._createStat(data);
+    return createStat(data);
   },
 
   existsSync(path) {
@@ -52,7 +53,7 @@ __requireCache["fs"] = {
         if (buffer.toString() == "ENOENT") {
           console.log(`readFile('${path}'): error: ENOENT in ${e - s}ms`);
           if (path.includes("CUTSCENE.json")) callback(/* without error */);
-          else callback(this._createErrorENOENT());
+          else callback(createErrorENOENT());
           return;
         }
 
@@ -76,7 +77,7 @@ __requireCache["fs"] = {
     const e = performance.now();
     if (buffer.toString() == "ENOENT") {
       console.log(`readFileSync('${path}'): ENOENT in ${e - s}ms`);
-      throw this._createErrorENOENT();
+      throw createErrorENOENT();
     }
 
     console.log(`readFileSync('${path}'): in ${e - s}ms`);
@@ -152,5 +153,14 @@ __requireCache["fs"] = {
     console.log(`mkdirSync('${path}') in ${e - s}ms`);
   },
 
-  // TODO: unlinkSync
+  /**
+   * @param {string} path
+   */
+  unlinkSync(path) {
+    const s = performance.now();
+    chromori.fetchSync("/unlink^" + path);
+    const e = performance.now();
+
+    console.log(`unlinkSync('${path}') in ${e - s}ms`);
+  },
 };

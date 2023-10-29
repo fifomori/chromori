@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "build": "esbuild requireCache.js --define:global=globalThis --global-name=__requireCache --bundle --outfile=bundle.js"
+    "build": "esbuild bundle_require.js --define:global=globalThis --global-name=__requireCache --bundle --outfile=bundle.js"
   },
   "dependencies": {
     "assert": "^2.1.0",

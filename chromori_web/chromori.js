@@ -67,12 +67,3 @@ globalThis.require = (id) => {
   }
   return module;
 };
-
-// expanded later in misc.js
-globalThis.process = {
-  env: JSON.parse(chromori.fetchSync("/env")),
-};
-
-process.platform = process.env._PLATFORM;
-process.versions = { nw: "0.29.0" };
-process.cwd = () => process.env._DIRNAME;
