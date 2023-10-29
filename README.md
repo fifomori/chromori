@@ -53,3 +53,4 @@ OneLoader state:
 - patches text, plugins, ...
 - doesn't patches assets (images/fonts/etc)
   - OneLoader's vfs_web uses the `chrome.debugger` API, which is available only for extensions/nw.js
+- doesn't loads .zip mods
