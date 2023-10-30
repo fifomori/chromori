@@ -14,6 +14,7 @@ __requireCache["nw.gui"] = window.nw = {
     get: () => {
       return {
         showDevTools: () => {},
+        closeDevTools: () => {},
         on: () => {},
       };
     },

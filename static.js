@@ -44,7 +44,7 @@ app.use("/", async (req, res) => {
     } catch (e) {}
 
     console.log(`static: ${req.url} ('${path}'): ENOENT`);
-    res.send("ENOENT");
+    res.status(404).send("ENOENT");
   }
 });
 
