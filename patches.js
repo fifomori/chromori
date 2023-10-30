@@ -39,6 +39,7 @@ module.exports = {
   "plugins.js"(file) {
     return (
       file +
+      '\n$plugins.unshift({ name: "chromori_oneloader_patches", status: true, description: "chromori oneloader patches", parameters: {} })' +
       '\n$plugins.push({ name: "chromori_plugins_patches", status: true, description: "chromori plugins patches", parameters: {} })'
     );
   },
@@ -52,6 +53,65 @@ module.exports = {
         return;
       }
     };`;
+
+    // copied from OneLoader
+    const iv = Buffer.from("EpicGamerMoment!");
+    const cipherStream = crypto.createCipheriv(
+      "aes-256-ctr",
+      fs.readFileSync("key", { encoding: "ascii" }),
+      iv
+    );
+    return Buffer.concat([
+      iv,
+      cipherStream.update(Buffer.from(file, "utf8")),
+      cipherStream.final(),
+    ]);
+  },
+  "chromori_oneloader_patches.omori"() {
+    const file = `if ($modLoader) {
+      XMLHttpRequest = class extends XMLHttpRequest {
+        open(method, url, async) {
+          if (typeof async === "undefined") this._chromori_async = true;
+          else this._chromori_async = async;
+
+          this._chromori_url = url;
+
+          return super.open(...arguments);
+        }
+
+        send() {
+          if (!this._chromori_url.startsWith(chromori.url)) {
+            let [bail, relativePath, entry] = _vfs_resolve_file_path(this._chromori_url);
+            if (entry) {
+              this._chromori_resourceHook = true;
+              setTimeout(() => {
+                if (this.onload) this.onload();
+                // this.dispatchEvent(new Event("load"));
+              }, 1);
+              return;
+            }
+          }
+
+          return super.send(...arguments);
+        }
+
+        get response() {
+          if (!this._chromori_resourceHook) return super.response;
+
+          try {
+            let data = _vfs_resolve_file_sync(this._chromori_url);
+            if (this.responseType === "arraybuffer") {
+              return data.buffer;
+            } else {
+              return data;
+            }
+          } catch (e) {
+            console.error(e);
+            return super.response;
+          }
+        }
+      }
+    }`;
 
     // copied from OneLoader
     const iv = Buffer.from("EpicGamerMoment!");

@@ -11,16 +11,19 @@ const app = express();
 app.set("etag", false);
 app.use((req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "x-chromori-path");
   res.header("Cache-Control", "no-store");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
   next();
 });
 
 app.use((req, res, next) => {
-  const url = decodeURIComponent(req.url.slice(1)).split("^");
-  const method = url.shift();
-  req.chromoriPath = url.shift();
-
-  console.log("api:", method, req.chromoriPath || "");
+  res.chromoriPath = req.headers["x-chromori-path"];
+  console.log(`api: ${req.url} ${res.chromoriPath || ""}`);
   next();
 });
 
@@ -49,48 +52,48 @@ app.all("/env", async (req, res) => {
   );
 });
 
-app.all("/stat*", async (req, res) => {
-  let path = req.chromoriPath;
-
+app.all("/stat", async (req, res) => {
   try {
-    const stat = await fs.stat(path);
+    const stat = await fs.stat(res.chromoriPath);
     res.send(stat.isFile() ? "file" : "dir");
   } catch (e) {
     res.send("ENOENT");
   }
 });
 
-app.all("/readFile*", async (req, res) => {
-  let path = req.chromoriPath;
+app.all("/readFile", async (req, res) => {
+  try {
+    res.chromoriPath = decodeURIComponent(res.chromoriPath);
+  } catch (e) {}
 
-  const baseName = pp.basename(path).toLowerCase();
+  const baseName = pp.basename(res.chromoriPath).toLowerCase();
   if (Object.keys(patches).includes(baseName)) {
     let file = "";
     try {
-      file = await fs.readFile(path, "utf8");
+      file = await fs.readFile(res.chromoriPath, "utf8");
     } catch (e) {}
 
     const patchedFile = patches[baseName](file);
-    console.log(`api: ${req.url} ('${path}'): patched`);
+    console.log(`api: ${req.url} ('${res.chromoriPath}'): patched`);
     res.send(patchedFile);
   } else {
     try {
-      const stat = await fs.stat(path);
+      const stat = await fs.stat(res.chromoriPath);
       if (stat.isFile()) {
         res.contentType("text/plain");
-        nfs.createReadStream(path).pipe(res);
+        nfs.createReadStream(res.chromoriPath).pipe(res);
+      } else {
+        throw new Error();
       }
     } catch (e) {
-      res.send("ENOENT");
+      res.status(404).send("ENOENT");
     }
   }
 });
 
-app.all("/writeFile*", async (req, res) => {
-  let path = req.chromoriPath;
-
+app.all("/writeFile", async (req, res) => {
   try {
-    await fs.writeFile(path, req.body);
+    await fs.writeFile(res.chromoriPath, req.body);
     res.status(200).end();
   } catch (e) {
     console.error(e);
@@ -98,21 +101,17 @@ app.all("/writeFile*", async (req, res) => {
   }
 });
 
-app.all("/readDir*", async (req, res) => {
-  let path = req.chromoriPath;
-
+app.all("/readDir", async (req, res) => {
   try {
-    res.send((await fs.readdir(path)).join(":"));
+    res.send((await fs.readdir(res.chromoriPath)).join(":"));
   } catch (e) {
     res.send("ENOENT");
   }
 });
 
-app.all("/mkDir*", async (req, res) => {
-  let path = req.chromoriPath;
-
+app.all("/mkDir", async (req, res) => {
   try {
-    await fs.mkdir(path);
+    await fs.mkdir(res.chromoriPath);
     res.status(200).end();
   } catch (e) {
     console.error(e);
@@ -120,11 +119,9 @@ app.all("/mkDir*", async (req, res) => {
   }
 });
 
-app.all("/unlink*", async (req, res) => {
-  let path = req.chromoriPath;
-
+app.all("/unlink", async (req, res) => {
   try {
-    await fs.unlink(path);
+    await fs.unlink(res.chromoriPath);
     res.status(200).end();
   } catch (e) {
     console.error(e);

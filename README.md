@@ -50,7 +50,9 @@ OneLoader isn't supported yet
 OneLoader state:
 
 - boots
-- patches text, plugins, ...
-- doesn't patches assets (images/fonts/etc)
+- patches all Node.js fs requests
+- patches all XHR requests
+- doesn't patches resource requests (fonts, some assets)
   - OneLoader's vfs_web uses the `chrome.debugger` API, which is available only for extensions/nw.js
-- doesn't loads .zip mods
+  - workaround: replace this assets manually
+- doesn't load .zip mods

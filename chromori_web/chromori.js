@@ -1,35 +1,38 @@
 const chromori = {
+  // TODO: options common type
   /**
    * @param {string} path
    * @param {(res: any) => void} callback
    * @param {{
-   *  method: string,
    *  type: XMLHttpRequestResponseType,
-   *  data: XMLHttpRequestBodyInit
+   *  data: any
    * }} options
    */
-  fetch: function (path, callback, options = { type: undefined, data: undefined }) {
+  fetch: function (method, path, callback, options = { type: undefined, data: undefined }) {
     const xhr = new XMLHttpRequest();
     if (options.type) xhr.responseType = options.type;
-    xhr.open(options.data ? "POST" : "GET", this.url + path, true);
-    xhr.onload = () => callback(xhr.response);
+
+    xhr.open("POST", this.url + method, true);
+    xhr.setRequestHeader("x-chromori-path", path);
+    xhr.addEventListener("load", () => callback(xhr.response));
     xhr.send(options.data);
   },
 
-  // TODO: options common type
   /**
    * @param {string} path
    * @param {{
-   *  method: string,
    *  mime: string,
    *  data: XMLHttpRequestBodyInit
    * }} options
    */
-  fetchSync: function (path, options = { mime: undefined, data: undefined }) {
+  fetchSync: function (method, path, options = { mime: undefined, data: undefined }) {
     const xhr = new XMLHttpRequest();
     if (options.mime) xhr.overrideMimeType(options.mime);
-    xhr.open(options.data ? "POST" : "GET", this.url + path, false);
+
+    xhr.open("POST", this.url + method, false);
+    xhr.setRequestHeader("x-chromori-path", path);
     xhr.send(options.data);
+
     return xhr.response;
   },
 

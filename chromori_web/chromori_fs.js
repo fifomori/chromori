@@ -16,7 +16,7 @@ module.exports = {
     if (!callback) return;
 
     const s = performance.now();
-    chromori.fetch("/stat^" + path, (res) => {
+    chromori.fetch("/stat", path, (res) => {
       const e = performance.now();
       console.log(`stat('${path}') ${res} in ${e - s}ms`);
 
@@ -25,7 +25,7 @@ module.exports = {
   },
   statSync(path) {
     const s = performance.now();
-    const data = chromori.fetchSync("/stat^" + path);
+    const data = chromori.fetchSync("/stat", path);
     const e = performance.now();
 
     console.log(`statSync('${path}') ${data} in ${e - s}ms`);
@@ -44,11 +44,12 @@ module.exports = {
 
     const s = performance.now();
     chromori.fetch(
-      "/readFile^" + path,
+      "/readFile",
+      path,
       (res) => {
         const e = performance.now();
 
-        const buffer = new Buffer(res);
+        const buffer = Buffer.from(res);
 
         if (buffer.toString() == "ENOENT") {
           console.log(`readFile('${path}'): error: ENOENT in ${e - s}ms`);
@@ -69,7 +70,7 @@ module.exports = {
 
     const s = performance.now();
 
-    const data = chromori.fetchSync("/readFile^" + path, {
+    const data = chromori.fetchSync("/readFile", path, {
       mime: "text/plain; charset=x-user-defined",
     });
     const buffer = Buffer.from(data, "ascii");
@@ -97,7 +98,8 @@ module.exports = {
     }
 
     chromori.fetch(
-      "/writeFile^" + path,
+      "/writeFile",
+      path,
       () => {
         const e = performance.now();
         console.log(`writeFile('${path}') in ${e - s}ms`);
@@ -113,7 +115,7 @@ module.exports = {
       data = chromori.encoder.encode(data);
     }
 
-    chromori.fetchSync("/writeFile^" + path, { data });
+    chromori.fetchSync("/writeFile", path, { data });
 
     const e = performance.now();
     console.log(`writeFileSync('${path}') in ${e - s}ms`);
@@ -123,7 +125,7 @@ module.exports = {
 
   readdir(path, callback) {
     const s = performance.now();
-    chromori.fetch("/readDir^" + path, (data) => {
+    chromori.fetch("/readDir", path, (data) => {
       const list = data.split(":");
       const e = performance.now();
 
@@ -134,7 +136,7 @@ module.exports = {
 
   readdirSync(path) {
     const s = performance.now();
-    let data = chromori.fetchSync("/readDir^" + path);
+    let data = chromori.fetchSync("/readDir", path);
     data = data.split(":");
     const e = performance.now();
 
@@ -147,7 +149,7 @@ module.exports = {
    */
   mkdirSync(path) {
     const s = performance.now();
-    chromori.fetchSync("/mkDir^" + path);
+    chromori.fetchSync("/mkDir", path);
     const e = performance.now();
 
     console.log(`mkdirSync('${path}') in ${e - s}ms`);
@@ -158,7 +160,7 @@ module.exports = {
    */
   unlinkSync(path) {
     const s = performance.now();
-    chromori.fetchSync("/unlink^" + path);
+    chromori.fetchSync("/unlink", path);
     const e = performance.now();
 
     console.log(`unlinkSync('${path}') in ${e - s}ms`);

@@ -14,6 +14,7 @@ app.use((req, res, next) => {
 });
 
 app.use("/chromori", express.static("chromori_web"));
+app.use("/.oneloader-image-cache", express.static(".oneloader-image-cache"));
 app.use("/", async (req, res) => {
   let path = pp.join(__dirname, "www", req.url);
   if (path.endsWith(pp.sep)) path += "index.html";
