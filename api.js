@@ -23,7 +23,6 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   res.chromoriPath = req.headers["x-chromori-path"];
-  console.log(`api: ${req.url} ${res.chromoriPath || ""}`);
   next();
 });
 
@@ -52,6 +51,8 @@ app.all("/env", async (req, res) => {
   );
 });
 
+// TODO: replace all ENOENT bodies with 404 status
+
 app.all("/stat", async (req, res) => {
   try {
     const stat = await fs.stat(res.chromoriPath);
@@ -74,7 +75,6 @@ app.all("/readFile", async (req, res) => {
     } catch (e) {}
 
     const patchedFile = patches[baseName](file);
-    console.log(`api: ${req.url} ('${res.chromoriPath}'): patched`);
     res.send(patchedFile);
   } else {
     try {

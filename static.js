@@ -30,21 +30,17 @@ app.use("/", async (req, res) => {
     } catch (e) {}
 
     const patchedFile = patches[baseName](file);
-    console.log(`static: ${req.url} ('${path}'): patched`);
     res.send(patchedFile);
   } else {
     try {
       const stat = await fs.stat(path);
       if (stat.isFile()) {
-        console.log(`static: ${req.url} ('${path}'): found`);
-
         if (pp.extname(path) == ".wasm") res.contentType("application/wasm");
         nfs.createReadStream(path).pipe(res);
         return;
       }
     } catch (e) {}
 
-    console.log(`static: ${req.url} ('${path}'): ENOENT`);
     res.status(404).send("ENOENT");
   }
 });
