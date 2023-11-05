@@ -1,31 +1,31 @@
+/// <reference path="intellisense.d.ts"/>
+
+/**
+ * @type {Chromori}
+ */
 const chromori = {
-  // TODO: options common type
-  /**
-   * @param {string} path
-   * @param {(res: any) => void} callback
-   * @param {{
-   *  type: XMLHttpRequestResponseType,
-   *  data: any
-   * }} options
-   */
-  fetch: function (method, path, callback, options = { type: undefined, data: undefined }) {
+  fetch: function (
+    method,
+    path,
+    callback,
+    options = { type: undefined, data: undefined, json: false }
+  ) {
     const xhr = new XMLHttpRequest();
     if (options.type) xhr.responseType = options.type;
 
     xhr.open("POST", this.url + method, true);
     xhr.setRequestHeader("x-chromori-path", path);
-    xhr.addEventListener("load", () => callback(xhr.response));
+    xhr.addEventListener("load", () => {
+      if (options.json) {
+        callback(JSON.parse(xhr.response));
+      } else {
+        callback(xhr.response);
+      }
+    });
     xhr.send(options.data);
   },
 
-  /**
-   * @param {string} path
-   * @param {{
-   *  mime: string,
-   *  data: XMLHttpRequestBodyInit
-   * }} options
-   */
-  fetchSync: function (method, path, options = { mime: undefined, data: undefined }) {
+  fetchSync: function (method, path, options = { mime: undefined, data: undefined, json: false }) {
     const xhr = new XMLHttpRequest();
     if (options.mime) xhr.overrideMimeType(options.mime);
 
@@ -33,12 +33,16 @@ const chromori = {
     xhr.setRequestHeader("x-chromori-path", path);
     xhr.send(options.data);
 
-    return xhr.response;
+    if (options.json) {
+      return JSON.parse(xhr.response);
+    } else {
+      return xhr.response;
+    }
   },
 
   decoder: new TextDecoder(),
   encoder: new TextEncoder(),
-  url: "http://localhost:8080",
+  url: `http://${window.location.hostname}:8080`,
 };
 
 /**
@@ -54,15 +58,17 @@ globalThis.require = (id) => {
     // OneLoader
     const file = fs.readFileSync(pp.join(pp.dirname(process.mainModule.filename), id));
 
-    function evalInContext(js, context) {
-      return function (str) {
-        return eval(str);
-      }.call(context, "with(this) { " + js + " }");
+    function evalInScope(js, contextAsScope) {
+      return function () {
+        with (this) {
+          return eval(js);
+        }
+      }.call(contextAsScope);
     }
 
-    let context = { module: { exports: {} } };
-    evalInContext(Buffer.from(file), context);
-    return context;
+    const context = { module: { exports: {} } };
+    evalInScope(chromori.decoder.decode(file), context);
+    return context.module.exports;
   }
 
   if (!module) {

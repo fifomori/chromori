@@ -13,7 +13,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/chromori", express.static("chromori_web"));
+app.use("/chromori", express.static("web"));
 app.use("/.oneloader-image-cache", express.static(".oneloader-image-cache"));
 app.use("/", async (req, res) => {
   let path = pp.join(__dirname, "www", req.url);
@@ -25,6 +25,7 @@ app.use("/", async (req, res) => {
 
   const baseName = pp.basename(path).toLowerCase();
   if (Object.keys(patches).includes(baseName)) {
+    let file;
     try {
       file = await fs.readFile(path, "utf8");
     } catch (e) {}

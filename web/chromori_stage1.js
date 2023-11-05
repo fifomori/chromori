@@ -7,7 +7,7 @@
 
 var global = globalThis;
 
-global.process = {
+globalThis.process = {
   env: JSON.parse(chromori.fetchSync("/env")),
   versions: { nw: "0.29.0" },
 };

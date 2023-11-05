@@ -22,11 +22,11 @@ if (!nfs.existsSync("key")) {
   const api = require("./api");
   const static = require("./static");
 
-  api.listen(8080, () => {
+  api.listen(8080, "0.0.0.0", () => {
     console.log(`chromori api is running`);
   });
 
-  static.listen(80, () => {
+  static.listen(80, "0.0.0.0", () => {
     console.log("chromori static is running on http://localhost");
   });
 }

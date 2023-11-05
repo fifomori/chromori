@@ -1,20 +1,20 @@
-/**
- * @param {string} type
- */
+/// <reference path="intellisense.d.ts"/>
+
+const ERRNO_ENOENT = "ENOENT";
+
 const createStat = (type) => {
   return {
-    isFile: () => type == "file",
-    isDirectory: () => type == "dir",
-    exists: () => type != "ENOENT",
+    isFile: () => type === "file",
+    isDirectory: () => type === "dir",
+    exists: () => type !== ERRNO_ENOENT,
   };
 };
 
-const createErrorENOENT = () => new Error("ENOENT");
+const createErrorNoEnt = () => new Error(ERRNO_ENOENT);
 
 module.exports = {
   stat(path, callback) {
     if (!callback) return;
-
     chromori.fetch("/stat", path, (res) => {
       callback(null, createStat(res));
     });
@@ -29,9 +29,6 @@ module.exports = {
     return this.statSync(path).exists();
   },
 
-  openSync() {},
-
-  // TODO: implement node-like callbackOrOptions, callbackOrUndefined
   readFile(path, callback) {
     if (!callback) return;
 
@@ -41,29 +38,25 @@ module.exports = {
       (res) => {
         const buffer = Buffer.from(res);
 
-        if (buffer.toString() == "ENOENT") {
+        if (buffer.toString() == ERRNO_ENOENT) {
           if (path.includes("CUTSCENE.json")) callback(/* without error */);
-          else callback(createErrorENOENT());
-          return;
+          else callback(createErrorNoEnt());
+        } else {
+          callback(null, buffer);
         }
-
-        callback(null, buffer);
       },
       { type: "arraybuffer" }
     );
   },
 
   readFileSync(path, options = "ascii") {
-    // HACK: Redirect Steamworks to empty file
-    path = path.replace(/Archeia_Steamworks/gi, "--------------------");
-
     const data = chromori.fetchSync("/readFile", path, {
       mime: "text/plain; charset=x-user-defined",
     });
     const buffer = Buffer.from(data, "ascii");
 
-    if (buffer.toString() == "ENOENT") {
-      throw createErrorENOENT();
+    if (buffer.toString() == ERRNO_ENOENT) {
+      throw createErrorNoEnt();
     }
 
     let encoding = typeof options === "string" ? options : options.encoding;
@@ -95,8 +88,6 @@ module.exports = {
     chromori.fetchSync("/writeFile", path, { data });
   },
 
-  writeSync() {},
-
   readdir(path, callback) {
     chromori.fetch("/readDir", path, (data) => {
       const list = data.split(":");
@@ -110,17 +101,14 @@ module.exports = {
     return data;
   },
 
-  /**
-   * @param {string} path
-   */
   mkdirSync(path) {
     chromori.fetchSync("/mkDir", path);
   },
 
-  /**
-   * @param {string} path
-   */
   unlinkSync(path) {
     chromori.fetchSync("/unlink", path);
   },
+
+  openSync() {},
+  writeSync() {},
 };

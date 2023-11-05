@@ -3,9 +3,9 @@ const nfs = require("fs");
 const fs = nfs.promises;
 
 const express = require("express");
-const bodyParser = require("body-parser");
-
 const patches = require("./patches");
+
+const ERRNO_ENOENT = "ENOENT";
 
 const app = express();
 app.set("etag", false);
@@ -26,39 +26,33 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(bodyParser.raw({ inflate: true, limit: "50mb", type: () => true }));
+app.use(express.raw({ inflate: true, limit: "50mb", type: () => true }));
 
 app.all("/env", async (req, res) => {
   let argv = [];
   try {
     argv = await fs.readFile("argv", { encoding: "ascii" });
     argv = argv.split(" ");
-  } catch (e) {
-    console.error(e);
-  }
+  } catch (e) {}
 
-  res.send(
-    JSON.stringify({
-      LOCALAPPDATA: process.env.LOCALAPPDATA,
-      HOME: process.env.HOME,
-      _PLATFORM: process.platform,
-      _DIRNAME: __dirname,
-      _ARGV: [
-        `--${await fs.readFile("key", { encoding: "ascii" })}`, //
-        ...argv,
-      ],
-    })
-  );
+  res.send({
+    LOCALAPPDATA: process.env.LOCALAPPDATA,
+    HOME: process.env.HOME,
+    _PLATFORM: process.platform,
+    _DIRNAME: __dirname,
+    _ARGV: [
+      `--${await fs.readFile("key", { encoding: "ascii" })}`, //
+      ...argv,
+    ],
+  });
 });
-
-// TODO: replace all ENOENT bodies with 404 status
 
 app.all("/stat", async (req, res) => {
   try {
     const stat = await fs.stat(res.chromoriPath);
     res.send(stat.isFile() ? "file" : "dir");
   } catch (e) {
-    res.send("ENOENT");
+    res.send(ERRNO_ENOENT);
   }
 });
 
@@ -86,7 +80,8 @@ app.all("/readFile", async (req, res) => {
         throw new Error();
       }
     } catch (e) {
-      res.status(404).send("ENOENT");
+      // FIXME: file can contain "ENOENT" text and this will cause an ENOENT error
+      res.send(ERRNO_ENOENT);
     }
   }
 });
@@ -101,11 +96,12 @@ app.all("/writeFile", async (req, res) => {
   }
 });
 
+// TODO: json maybe
 app.all("/readDir", async (req, res) => {
   try {
     res.send((await fs.readdir(res.chromoriPath)).join(":"));
   } catch (e) {
-    res.send("ENOENT");
+    res.send(ERRNO_ENOENT);
   }
 });
 
@@ -126,6 +122,50 @@ app.all("/unlink", async (req, res) => {
   } catch (e) {
     console.error(e);
     res.status(500).end();
+  }
+});
+
+const greenworks = require("./greenworks/greenworks");
+
+let greenworksInit = false;
+try {
+  greenworksInit = greenworks.init();
+  console.log("Connected to Steam");
+} catch (e) {
+  console.log("Cannot connect to Steam, achievements will not work");
+}
+
+app.all("/steamworks/achievements/count", async (req, res) => {
+  let number = 0;
+  if (greenworksInit) number = greenworks.getNumberOfAchievements();
+  res.send({ number });
+});
+
+app.all("/steamworks/achievements/list", async (req, res) => {
+  let achievements = [];
+  if (greenworksInit) achievements = greenworks.getAchievementNames();
+  res.send({ achievements });
+});
+
+app.all("/steamworks/achievements/get", async (req, res) => {
+  if (greenworksInit) {
+    greenworks.getAchievement(res.chromoriPath, (isAchieved) => {
+      res.send({ result: isAchieved });
+    });
+  } else {
+    res.send({ result: false });
+  }
+});
+
+app.all("/steamworks/achievements/activate", async (req, res) => {
+  if (greenworksInit) {
+    greenworks.activateAchievement(
+      res.chromoriPath,
+      () => res.send({ result: true }),
+      () => res.send({ result: false })
+    );
+  } else {
+    res.send({ result: false });
   }
 });
 

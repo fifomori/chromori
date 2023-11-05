@@ -1,16 +1,18 @@
 const fs = require("fs");
-const crypto = require("crypto");
+const pp = require("path");
+const utils = require("./utils");
+
 const { JSDOM } = require("jsdom");
 const DOMParser = new JSDOM().window.DOMParser;
 
 module.exports = {
   "index.html"(file) {
     const patches = [
-      "chromori",
-      "chromori_preload", //
+      "chromori_stage0", //
+      "chromori_stage1",
       "bundle",
       "require_cache",
-      "chromori_postload",
+      "chromori_stage2",
     ].reverse();
 
     const doc = new DOMParser().parseFromString(file, "text/html");
@@ -37,93 +39,9 @@ module.exports = {
     return "window._logLine = console.warn";
   },
   "plugins.js"(file) {
-    return (
-      file +
-      '\n$plugins.unshift({ name: "chromori_oneloader_patches", status: true, description: "chromori oneloader patches", parameters: {} })' +
-      '\n$plugins.push({ name: "chromori_plugins_patches", status: true, description: "chromori plugins patches", parameters: {} })'
-    );
-  },
-  "chromori_plugins_patches.omori"() {
-    // Even though this is a unlink from Steam, the key is still required to boot
-    const file = `Scene_Boot = class extends Scene_Boot {
-      hasSteamwork() {
-        return true;
-      }
-      getAchievementsData() {
-        return;
-      }
-    };`;
-
-    // copied from OneLoader
-    const iv = Buffer.from("EpicGamerMoment!");
-    const cipherStream = crypto.createCipheriv(
-      "aes-256-ctr",
-      fs.readFileSync("key", { encoding: "ascii" }),
-      iv
-    );
-    return Buffer.concat([
-      iv,
-      cipherStream.update(Buffer.from(file, "utf8")),
-      cipherStream.final(),
-    ]);
+    return file + fs.readFileSync(pp.join("files", "plugins.js"));
   },
   "chromori_oneloader_patches.omori"() {
-    const file = `if ($modLoader) {
-      XMLHttpRequest = class extends XMLHttpRequest {
-        open(method, url, async) {
-          if (typeof async === "undefined") this._chromori_async = true;
-          else this._chromori_async = async;
-
-          this._chromori_url = url;
-
-          return super.open(...arguments);
-        }
-
-        send() {
-          if (!this._chromori_url.startsWith(chromori.url)) {
-            let [bail, relativePath, entry] = _vfs_resolve_file_path(this._chromori_url);
-            if (entry) {
-              this._chromori_resourceHook = true;
-              setTimeout(() => {
-                if (this.onload) this.onload();
-                // this.dispatchEvent(new Event("load"));
-              }, 1);
-              return;
-            }
-          }
-
-          return super.send(...arguments);
-        }
-
-        get response() {
-          if (!this._chromori_resourceHook) return super.response;
-
-          try {
-            let data = _vfs_resolve_file_sync(this._chromori_url);
-            if (this.responseType === "arraybuffer") {
-              return data.buffer;
-            } else {
-              return data;
-            }
-          } catch (e) {
-            console.error(e);
-            return super.response;
-          }
-        }
-      }
-    }`;
-
-    // copied from OneLoader
-    const iv = Buffer.from("EpicGamerMoment!");
-    const cipherStream = crypto.createCipheriv(
-      "aes-256-ctr",
-      fs.readFileSync("key", { encoding: "ascii" }),
-      iv
-    );
-    return Buffer.concat([
-      iv,
-      cipherStream.update(Buffer.from(file, "utf8")),
-      cipherStream.final(),
-    ]);
+    return utils.encrypt(fs.readFileSync(pp.join("files", "chromori_oneloader_patches.js")));
   },
 };

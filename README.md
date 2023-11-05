@@ -28,31 +28,32 @@ If you want to leave OMORI, do **NOT** close the tab instantly! Send me a log
 
 1. Install dependencies
 
-   - Open command line in `chromori` directory
-   - Run these commands
-   - `pnpm i`
-   - `cd chromori_web && pnpm i && pnpm build && cd ..`
+   - Run `install.bat`
 
 1. Copy the `OMORI/www` folder to `chromori/www`
 
 # Running
 
-1. Open command line in `chromori` directory
-1. `pnpm app`
+1. Run Steam (if you want to collect an achievements)
+1. Run `app.bat`
 1. Open `http://localhost` in your browser
 
 # Compatibility
 
-Tested with Chrome 118.0.5993.118 and Firefox 119.0
+Tested with Chrome 119 and Firefox 119
 
-OneLoader isn't supported yet
+OneLoader is mostly supported
 
 OneLoader state:
 
-- boots
 - patches all Node.js fs requests
 - patches all XHR requests
-- doesn't patches resource requests (fonts, some assets)
-  - OneLoader's vfs_web uses the `chrome.debugger` API, which is available only for extensions/nw.js
-  - workaround: replace this assets manually
+- doesn't patch resource requests (fonts, some assets)
+  - OneLoader's vfs_web uses the Chrome Extensions API, which is unavailable for regular website
+  - workaround: replace these assets manually
 - doesn't load .zip mods
+  - node_stream_zip using fs.open, which is hard to implement without WebSockets
+  - however, using WebSockets makes it impossible to implement synchronous fs
+  - workaround: unzip mods
+  - TODO: patch OneLoader to prevent loading zips
+- maybe it will not update itself (but if it will, please don't do that)
