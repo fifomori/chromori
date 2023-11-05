@@ -40,7 +40,10 @@ If you want to leave OMORI, do **NOT** close the tab instantly! Send me a log
 
 # Compatibility
 
-Tested with Chrome 119 and Firefox 119
+- Chrome (tested with 119)
+  - works very well
+- Firefox (tested with 119)
+  - has some sound stutters on synchronus fs operations (mainly in menu)
 
 OneLoader is mostly supported
 
