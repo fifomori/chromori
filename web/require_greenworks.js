@@ -15,8 +15,6 @@ module.exports = {
       "/steamworks/achievements/get",
       name,
       (res) => {
-        console.log(res);
-        console.log(typeof res.result);
         callback(res.result);
       },
       { json: true }
@@ -27,8 +25,6 @@ module.exports = {
       "/steamworks/achievements/activate",
       name,
       (res) => {
-        console.log(res);
-        console.log(typeof res.result);
         if (res.result) successCallback();
         else errorCallback();
       },
