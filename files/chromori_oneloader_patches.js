@@ -1,4 +1,4 @@
-if ($modLoader) {
+if (typeof $modLoader !== "undefined" && $modLoader) {
   // Copied from OneLoader
   function _vfs_resolve_file_path(relativePath) {
     relativePath = relativePath.toLowerCase();

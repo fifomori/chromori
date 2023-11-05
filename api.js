@@ -33,6 +33,7 @@ app.all("/env", async (req, res) => {
   try {
     argv = await fs.readFile("argv", { encoding: "ascii" });
     argv = argv.split(" ");
+    if (!argv[0]) argv = [];
   } catch (e) {}
 
   res.send({
