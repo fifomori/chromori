@@ -1,5 +1,5 @@
 @echo off
 
-pnpm app
+call pnpm app
 
 pause

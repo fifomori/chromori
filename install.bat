@@ -1,10 +1,10 @@
 @echo off
 
-pnpm i
+call pnpm i
 
 pushd web
-pnpm i
-pnpm build
+call pnpm i
+call pnpm build
 popd
 
 pause
