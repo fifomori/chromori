@@ -3,6 +3,7 @@ node_modules
 # OMORI files
 www*
 .oneloader-image-cache
+nowyouknow*
 
 argv
 key

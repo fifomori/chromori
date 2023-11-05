@@ -22,7 +22,7 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  res.chromoriPath = req.headers["x-chromori-path"];
+  res.chromoriPath = decodeURIComponent(req.headers["x-chromori-path"]);
   next();
 });
 

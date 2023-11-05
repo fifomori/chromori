@@ -30,7 +30,7 @@ const chromori = {
     if (options.mime) xhr.overrideMimeType(options.mime);
 
     xhr.open("POST", this.url + method, false);
-    xhr.setRequestHeader("x-chromori-path", path);
+    xhr.setRequestHeader("x-chromori-path", encodeURIComponent(path));
     xhr.send(options.data);
 
     if (options.json) {
