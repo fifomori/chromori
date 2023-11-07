@@ -1,9 +1,10 @@
 node_modules
 
 # OMORI files
-www*
 .oneloader-image-cache
+www*
 nowyouknow*
+activatedAchievements.json
 
 argv
 key

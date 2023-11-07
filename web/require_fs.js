@@ -12,23 +12,10 @@ const createStat = (type) => {
 
 const createErrorNoEnt = () => new Error(ERRNO_ENOENT);
 
+// TODO: refactor fetch
+// TODO: add console warning when async function called without callback
+
 module.exports = {
-  stat(path, callback) {
-    if (!callback) return;
-    chromori.fetch("/stat", path, (res) => {
-      callback(null, createStat(res));
-    });
-  },
-
-  statSync(path) {
-    const data = chromori.fetchSync("/stat", path);
-    return createStat(data);
-  },
-
-  existsSync(path) {
-    return this.statSync(path).exists();
-  },
-
   readFile(path, callback) {
     if (!callback) return;
 
@@ -101,14 +88,51 @@ module.exports = {
     return data;
   },
 
+  // TODO: mkdir
+
   mkdirSync(path) {
     chromori.fetchSync("/mkDir", path);
   },
+
+  // TODO: unlink
 
   unlinkSync(path) {
     chromori.fetchSync("/unlink", path);
   },
 
+  stat(path, callback) {
+    if (!callback) return;
+    chromori.fetch("/stat", path, (res) => {
+      callback(null, createStat(res));
+    });
+  },
+
+  statSync(path) {
+    const data = chromori.fetchSync("/stat", path);
+    return createStat(data);
+  },
+
+  existsSync(path) {
+    return this.statSync(path).exists();
+  },
+
+  // TODO: lstat?
+
+  rename(oldPath, newPath, callback) {
+    if (!callback) return;
+    chromori.fetch(
+      "/rename",
+      oldPath,
+      (res) => {
+        callback();
+      },
+      { data: newPath }
+    );
+  },
+
+  // TODO: renameSync?
+
+  // Stubs
   openSync() {},
   writeSync() {},
 };

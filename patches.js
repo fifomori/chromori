@@ -44,4 +44,7 @@ module.exports = {
   "chromori_oneloader_patches.omori"() {
     return utils.encrypt(fs.readFileSync(pp.join("files", "chromori_oneloader_patches.js")));
   },
+  "chromori_plugins_patches.omori"() {
+    return utils.encrypt(fs.readFileSync(pp.join("files", "chromori_plugins_patches.js")));
+  },
 };

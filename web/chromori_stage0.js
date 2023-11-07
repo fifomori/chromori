@@ -43,6 +43,18 @@ const chromori = {
   decoder: new TextDecoder(),
   encoder: new TextEncoder(),
   url: `http://${window.location.hostname}:8080`,
+
+  createAchievementElement: function (name, description, icon, id) {
+    const el = document.createElement("div");
+    el.className = "chromori_achievement";
+    el.id = id;
+    el.innerHTML = `<div class="chromori_achievement_icon" style="background-image: url(${icon})"></div>
+        <div class="chromori_achievement_text">
+          <div class="chromori_achievement_name">${name}</div>
+          <div class="chromori_achievement_desc">${description}</div>
+        </div>`;
+    return el;
+  },
 };
 
 /**

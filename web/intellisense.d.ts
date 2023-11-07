@@ -1,3 +1,9 @@
+interface AchievementData {
+  name: string;
+  description: string;
+  img: string;
+}
+
 interface Chromori {
   fetch: (
     method: string,
@@ -23,6 +29,13 @@ interface Chromori {
   decoder: TextDecoder;
   encoder: TextEncoder;
   url: string;
+
+  createAchievementElement: (
+    name: string,
+    description: string,
+    icon: string,
+    id: string
+  ) => HTMLDivElement;
 }
 
 interface Window {

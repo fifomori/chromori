@@ -1,5 +1,7 @@
 /// <reference path="intellisense.d.ts"/>
 
+let isFallback = !chromori.fetchSync("/steamworks/achievements/init", null, { json: true }).result;
+
 module.exports = {
   initAPI() {
     return true;
@@ -20,13 +22,27 @@ module.exports = {
       { json: true }
     );
   },
-  activateAchievement(name, successCallback, errorCallback) {
+  activateAchievement(id, successCallback, errorCallback) {
     chromori.fetch(
       "/steamworks/achievements/activate",
-      name,
+      id,
       (res) => {
-        if (res.result) successCallback();
-        else errorCallback();
+        if (!res.result) return errorCallback();
+
+        if (isFallback) {
+          /** @type {AchievementData} */
+          const info = chromori.fetchSync("/steamworks/achievements/info", id, { json: true });
+          if (!info.name) return errorCallback();
+
+          const el = chromori.createAchievementElement(info.name, info.description, info.img, id);
+          document.querySelector(".chromori_achievement_area").appendChild(el);
+
+          setTimeout(() => {
+            document.getElementById(id)?.remove();
+          }, 5000);
+        }
+
+        successCallback();
       },
       { json: true }
     );
