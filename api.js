@@ -26,10 +26,12 @@ app.use((req, res, next) => {
   res.chromoriPath = decodeURIComponent(req.headers["x-chromori-path"]);
   if (req.url.startsWith("/fs")) {
     let resolved = pp.resolve(res.chromoriPath);
-    let relative = pp.relative(__dirname, resolved);
-    if (relative.startsWith("..") || pp.isAbsolute(relative)) {
-      res.status(403).send(ERRNO_EPERM);
-      return;
+    if (!resolved.startsWith(pp.join(process.env.LOCALAPPDATA, "OMORI"))) {
+      let relative = pp.relative(__dirname, resolved);
+      if (relative.startsWith("..") || pp.isAbsolute(relative)) {
+        res.status(403).send(ERRNO_EPERM);
+        return;
+      }
     }
   }
 
