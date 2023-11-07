@@ -5,6 +5,7 @@ const fs = nfs.promises;
 const express = require("express");
 const patches = require("./patches");
 
+const ERRNO_EPERM = "EPERM";
 const ERRNO_ENOENT = "ENOENT";
 
 const app = express();
@@ -23,6 +24,15 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   res.chromoriPath = decodeURIComponent(req.headers["x-chromori-path"]);
+  if (req.url.startsWith("/fs")) {
+    let resolved = pp.resolve(res.chromoriPath);
+    let relative = pp.relative(__dirname, resolved);
+    if (relative.startsWith("..") || pp.isAbsolute(relative)) {
+      res.status(403).send(ERRNO_EPERM);
+      return;
+    }
+  }
+
   next();
 });
 
@@ -48,7 +58,7 @@ app.all("/env", async (req, res) => {
   });
 });
 
-app.all("/readFile", async (req, res) => {
+app.all("/fs/readFile", async (req, res) => {
   try {
     res.chromoriPath = decodeURIComponent(res.chromoriPath);
   } catch (e) {}
@@ -78,7 +88,7 @@ app.all("/readFile", async (req, res) => {
   }
 });
 
-app.all("/writeFile", async (req, res) => {
+app.all("/fs/writeFile", async (req, res) => {
   try {
     await fs.writeFile(res.chromoriPath, req.body);
     res.status(200).end();
@@ -89,7 +99,7 @@ app.all("/writeFile", async (req, res) => {
 });
 
 // TODO: json maybe
-app.all("/readDir", async (req, res) => {
+app.all("/fs/readDir", async (req, res) => {
   try {
     res.send((await fs.readdir(res.chromoriPath)).join(":"));
   } catch (e) {
@@ -97,7 +107,7 @@ app.all("/readDir", async (req, res) => {
   }
 });
 
-app.all("/mkDir", async (req, res) => {
+app.all("/fs/mkDir", async (req, res) => {
   try {
     await fs.mkdir(res.chromoriPath);
     res.status(200).end();
@@ -107,7 +117,7 @@ app.all("/mkDir", async (req, res) => {
   }
 });
 
-app.all("/unlink", async (req, res) => {
+app.all("/fs/unlink", async (req, res) => {
   try {
     await fs.unlink(res.chromoriPath);
     res.status(200).end();
@@ -117,7 +127,7 @@ app.all("/unlink", async (req, res) => {
   }
 });
 
-app.all("/stat", async (req, res) => {
+app.all("/fs/stat", async (req, res) => {
   try {
     const stat = await fs.stat(res.chromoriPath);
     res.send(stat.isFile() ? "file" : "dir");
@@ -126,7 +136,7 @@ app.all("/stat", async (req, res) => {
   }
 });
 
-app.all("/rename", async (req, res) => {
+app.all("/fs/rename", async (req, res) => {
   try {
     await fs.rename(res.chromoriPath, req.body);
   } catch (e) {}

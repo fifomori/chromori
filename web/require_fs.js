@@ -20,7 +20,7 @@ module.exports = {
     if (!callback) return;
 
     chromori.fetch(
-      "/readFile",
+      "/fs/readFile",
       path,
       (res) => {
         const buffer = Buffer.from(res);
@@ -37,7 +37,7 @@ module.exports = {
   },
 
   readFileSync(path, options = "ascii") {
-    const data = chromori.fetchSync("/readFile", path, {
+    const data = chromori.fetchSync("/fs/readFile", path, {
       mime: "text/plain; charset=x-user-defined",
     });
     const buffer = Buffer.from(data, "ascii");
@@ -59,7 +59,7 @@ module.exports = {
     }
 
     chromori.fetch(
-      "/writeFile",
+      "/fs/writeFile",
       path,
       () => {
         callback();
@@ -72,18 +72,18 @@ module.exports = {
     if (typeof data === "string") {
       data = chromori.encoder.encode(data);
     }
-    chromori.fetchSync("/writeFile", path, { data });
+    chromori.fetchSync("/fs/writeFile", path, { data });
   },
 
   readdir(path, callback) {
-    chromori.fetch("/readDir", path, (data) => {
+    chromori.fetch("/fs/readDir", path, (data) => {
       const list = data.split(":");
       callback(null, list);
     });
   },
 
   readdirSync(path) {
-    let data = chromori.fetchSync("/readDir", path);
+    let data = chromori.fetchSync("/fs/readDir", path);
     data = data.split(":");
     return data;
   },
@@ -91,24 +91,24 @@ module.exports = {
   // TODO: mkdir
 
   mkdirSync(path) {
-    chromori.fetchSync("/mkDir", path);
+    chromori.fetchSync("/fs/mkDir", path);
   },
 
   // TODO: unlink
 
   unlinkSync(path) {
-    chromori.fetchSync("/unlink", path);
+    chromori.fetchSync("/fs/unlink", path);
   },
 
   stat(path, callback) {
     if (!callback) return;
-    chromori.fetch("/stat", path, (res) => {
+    chromori.fetch("/fs/stat", path, (res) => {
       callback(null, createStat(res));
     });
   },
 
   statSync(path) {
-    const data = chromori.fetchSync("/stat", path);
+    const data = chromori.fetchSync("/fs/stat", path);
     return createStat(data);
   },
 
@@ -121,7 +121,7 @@ module.exports = {
   rename(oldPath, newPath, callback) {
     if (!callback) return;
     chromori.fetch(
-      "/rename",
+      "/fs/rename",
       oldPath,
       (res) => {
         callback();
