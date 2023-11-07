@@ -60,3 +60,15 @@ OneLoader state:
   - workaround: unzip mods
   - TODO: patch OneLoader to prevent loading zips
 - maybe it will not update itself (but if it will, please don't do that)
+
+# TODO
+
+- Publish prebuilt package
+- Test all greenworks binaries
+- Support darwin and linux
+  - Build greenworks
+  - Write a getKey.js
+
+# Info
+
+- Steamworks SDK version: v1.58a
