@@ -34,7 +34,7 @@ If you want to leave OMORI, do **NOT** close the tab instantly! Send me a log
 
 # Running
 
-1. Run Steam (if you want to collect an achievements)
+1. Run Steam (if you want to collect achievements)
 1. Run `app.bat`
 1. Open `http://localhost` in your browser
 
