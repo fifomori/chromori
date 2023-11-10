@@ -68,21 +68,36 @@
   area.className = "chromori_achievement_area";
   document.body.appendChild(area);
 
+  Window_OmoMenuOptionsGeneral = class extends Window_OmoMenuOptionsGeneral {
+    // remove resolution and fullscreen options
+    makeOptionsList() {
+      super.makeOptionsList(...arguments);
+      this._optionsList = this._optionsList.slice(2);
+    }
+
+    // skip resolution and fullscreen options when changing options
+    processOptionCommand() {
+      const _index = this.index;
+      this.index = function () {
+        return _index.call(this, ...arguments) + 2;
+      };
+
+      this._optionsList.unshift(null, null);
+      super.processOptionCommand(...arguments);
+      this._optionsList = this._optionsList.slice(2);
+
+      this.index = _index;
+    }
+  };
+
   Window_OmoMenuOptionsSystem = class extends Window_OmoMenuOptionsSystem {
     makeCommandList() {
       const _addCommand = this.addCommand;
       this.addCommand = function (_, symbol) {
         if (symbol !== "exit") _addCommand.call(this, ...arguments);
       };
-      super.makeCommandList();
+      super.makeCommandList(...arguments);
       this.addCommand = _addCommand;
-    }
-  };
-
-  Window_OmoMenuOptionsGeneral = class extends Window_OmoMenuOptionsGeneral {
-    makeOptionsList() {
-      super.makeOptionsList();
-      this._optionsList = this._optionsList.slice(2); // remove resolution and fullscreen options
     }
   };
 })();
