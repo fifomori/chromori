@@ -4,15 +4,6 @@ OMORI in a browser
 
 ![hero_capitalism](.github/assets/hero_capitalism.png)
 
-# IMPORTANT
-
-If you want to leave OMORI, do **NOT** close the tab instantly! Send me a log
-
-- Open DevTools (Ctrl+Shift+I)
-- Click RMB on any line
-- Click 'Save as...' and save it on Desktop
-- Send it to @cafeed28 in Discord
-
 # Prerequisites
 
 - [OMORI](https://store.steampowered.com/app/1150690/OMORI)
