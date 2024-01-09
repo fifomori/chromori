@@ -19,8 +19,11 @@ module.exports = (app) => {
         let url = req.url;
         if (url == "/") url += "index.html";
 
-        // TODO: напиши нормально
         // there is some shit like '/img/characters/$DW_OMORI_RUN%(8).rpgmvp' that we don't need to decode
+        // at the same time there are files like /img/system/QTE%20Arrow.rpgmvp' that need to be decoded
+        // i hope there are no files with malformed names that need to be decoded
+        // (something like '/img/system/$SMTH%20%(3).rpgmv')
+        // TODO: use some method that can decode ^^ this ^^ idk
         try {
             url = decodeURIComponent(url);
         } catch (e) {

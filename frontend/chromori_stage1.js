@@ -1,10 +1,9 @@
-// TODO: ?
-var global = globalThis;
-
-globalThis.process = {
-    env: JSON.parse(chromori.fetchSync("/env").res),
-    versions: { nw: "0.29.0" },
-};
-
-process.platform = process.env._PLATFORM;
-process.cwd = () => process.env._CWD;
+(() => {
+    const env = JSON.parse(chromori.fetchSync("/env").res);
+    globalThis.process = {
+        env,
+        versions: { nw: "0.29.0" },
+        platform: env._PLATFORM,
+        cwd: () => env._CWD,
+    };
+})();

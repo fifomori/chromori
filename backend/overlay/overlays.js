@@ -20,8 +20,10 @@ module.exports = {
                 script.src = `chromori/${file}.js`;
                 // TODO: ?
                 if (doc.head) doc.head.insertBefore(script, doc.head.firstChild);
-                else if (doc.body) doc.body.insertBefore(script, doc.body.firstChild);
-                else throw new Error("Failed to patch index.html");
+                else if (doc.body) {
+                    console.warn("Failed to patch head, patching body");
+                    doc.body.insertBefore(script, doc.body.firstChild);
+                } else throw "Failed to patch index.html";
             }
 
             return doc.documentElement.innerHTML;

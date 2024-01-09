@@ -3,7 +3,7 @@
 /**
  * @type {Chromori}
  */
-const chromori = {
+globalThis.chromori = {
     fetch: function (method, path, callback, options = { type: undefined, data: undefined, json: false }) {
         const xhr = new XMLHttpRequest();
         if (options.type) xhr.responseType = options.type;

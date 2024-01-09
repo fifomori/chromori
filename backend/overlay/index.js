@@ -5,7 +5,7 @@ const overlays = require("./overlays");
 const { fs, encrypt } = require("../utils");
 
 const wwwPath = pp.join(config.gamePath, "www");
-const filesPath = pp.join(process.cwd(), "backend", "overlay", "files"); // TODO: сделать кароче чтоб брало название этого файла и от него дирнейм
+const filesPath = pp.join(__dirname, "files");
 
 module.exports = {
     /**
