@@ -18,13 +18,18 @@ module.exports = (app) => {
     const fallbackAchievements = require("./achievements.json");
 
     let greenworksInit = false;
-    try {
-        // TODO: allow disable steam in config
-        // greenworksInit = greenworks.init();
-        console.log("Connected to Steam");
-    } catch (e) {
-        console.log("Cannot connect to Steam, using fallback achievements method");
+    if (!config.noSteam) {
+        try {
+            greenworksInit = greenworks.init();
+            console.log("Connected to Steam");
+        } catch (e) {
+            console.log("Failed to connect to Steam");
+        }
     }
+
+    if (!greenworksInit)
+        console.log("Using fallback achievements method");
+
 
     // TODO: use status instead of result: false
     app.all("/api/steamworks/achievements/init", async (req, res) => {
