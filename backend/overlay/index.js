@@ -12,7 +12,7 @@ module.exports = {
      * @param {string} path
      */
     async resolveOverlay(path) {
-        const overlayPath = path.toLowerCase();
+        const overlayPath = path.toLowerCase().replace(/\\/g, "/");
         const overlay = overlays[overlayPath];
         const baseName = pp.basename(overlayPath);
 

@@ -1,5 +1,8 @@
 /// <reference path="intellisense.d.ts"/>
 
+// OneLoader compatibility
+var global = globalThis;
+
 /**
  * @type {Chromori}
  */

@@ -54,7 +54,7 @@ module.exports = {
             data = chromori.encoder.encode(data);
         }
 
-        chromori.fetch("/fs/writeFile", path, () => callback, { data });
+        chromori.fetch("/fs/writeFile", path, callback, { data });
     },
 
     writeFileSync(path, data) {
@@ -65,8 +65,8 @@ module.exports = {
     },
 
     readdir(path, callback) {
-        chromori.fetch("/fs/readDir", path, (data) => {
-            const list = data.split(":");
+        chromori.fetch("/fs/readDir", path, (status, res) => {
+            const list = res.split(":");
             callback(null, list);
         });
     },
@@ -109,7 +109,7 @@ module.exports = {
 
     rename(oldPath, newPath, callback) {
         if (!callback) return;
-        chromori.fetch("/fs/rename", oldPath, () => callback(), { data: newPath });
+        chromori.fetch("/fs/rename", oldPath, callback, { data: newPath });
     },
 
     // TODO: renameSync?

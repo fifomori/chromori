@@ -29,23 +29,6 @@ module.exports = {
             return doc.documentElement.innerHTML;
         },
     },
-    "early_loader.js": {
-        type: "custom",
-        async patch(file) {
-            return (
-                file
-                    // Throw all errors so you can debug it in DevTools
-                    .replace("run().catch(e => {", "run(); /*")
-                    .replace("    });\n})();", "*/})();")
-                    // Don't install DevTools vfs
-                    .replace("await _modLoader_install_debugger_vfs", "//")
-            );
-        },
-    },
-    "logging.js": {
-        type: "replace",
-        content: "window._logLine = console.warn",
-    },
     "/js/plugins.js": {
         type: "merge",
         fileName: "plugins.js",
@@ -62,5 +45,22 @@ module.exports = {
         type: "replace",
         fileName: "chromori_plugins_patches.js",
         encrypt: true,
+    },
+    "/modloader/early_loader.js": {
+        type: "custom",
+        async patch(file) {
+            return (
+                file
+                    // Throw all errors so you can debug it in DevTools
+                    .replace("run().catch(e => {", "run(); /*")
+                    .replace("    });\n})();", "*/})();")
+                    // Don't install DevTools vfs
+                    .replace("await _modLoader_install_debugger_vfs", "//")
+            );
+        },
+    },
+    "/modloader/logging.js": {
+        type: "replace",
+        content: "window._logLine = console.warn",
     },
 };

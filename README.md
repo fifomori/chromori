@@ -50,7 +50,8 @@ OneLoader state:
   - however, using WebSockets makes it impossible to implement synchronous fs
   - workaround: unzip mods
   - TODO: patch OneLoader to prevent loading zips
-- maybe it will not update itself (but if it will, please don't do that)
+- will not update itself
+- game decryption not working
 
 # TODO
 

@@ -11,7 +11,6 @@ const wwwPath = pp.join(config.gamePath, "www");
  */
 module.exports = (app) => {
     app.all("/api/fs/readFile", async (req, res) => {
-        console.log(`fs.readFile: ${res.chromoriPath}`);
         // see backend/static.js:23
         // although i'm not sure if it's necessary here
         try {
