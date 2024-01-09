@@ -1,6 +1,6 @@
 /// <reference path="intellisense.d.ts"/>
 
-let isFallback = !chromori.fetchSync("/steamworks/achievements/init", null, { json: true }).result;
+let isFallback = !chromori.fetchSync("/steamworks/achievements/init", null, { json: true }).res.result;
 
 module.exports = {
     initAPI() {
