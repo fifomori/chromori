@@ -63,6 +63,6 @@ if (!config.key) {
     require("./static")(app);
 
     app.listen(80, "0.0.0.0", () => {
-        console.log("chromori static is running on http://localhost:80");
+        console.log("chromori is running on http://localhost:80");
     });
 }
