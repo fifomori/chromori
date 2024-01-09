@@ -1,8 +1,11 @@
 @echo off
 
+pushd frontend
 call pnpm i
+call pnpm build
+popd
 
-pushd web
+pushd backend
 call pnpm i
 call pnpm build
 popd

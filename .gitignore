@@ -4,7 +4,7 @@ node_modules
 .oneloader-image-cache
 www*
 nowyouknow*
-activatedAchievements.json
 
-argv
-key
+# Config
+config.json
+activatedAchievements.json
