@@ -91,6 +91,7 @@
     };
 
     Window_OmoMenuOptionsSystem = class extends Window_OmoMenuOptionsSystem {
+        // remove exit option
         makeCommandList() {
             const _addCommand = this.addCommand;
             this.addCommand = function (_, symbol) {
