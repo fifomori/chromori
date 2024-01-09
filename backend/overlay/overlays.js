@@ -5,20 +5,19 @@ module.exports = {
     "/index.html": {
         type: "custom",
         async patch(file) {
-            const patches = [
-                "chromori_stage0", //
-                "chromori_stage1",
-                "bundle",
-                "require_cache",
-                "chromori_stage2",
+            const files = [
+                "chromori_stage0", // chromori object and require method
+                "chromori_stage1", // node-specific objects from /api/env
+                "bundle", // import modules for require
+                "chromori_stage2", // node-specific objects that depend on modules
             ].reverse();
 
             const doc = new DOMParser().parseFromString(file, "text/html");
 
-            for (const patch of patches) {
+            for (const file of files) {
                 const script = doc.createElement("script");
                 script.type = "text/javascript";
-                script.src = `chromori/${patch}.js`;
+                script.src = `chromori/${file}.js`;
                 // TODO: ?
                 if (doc.head) doc.head.insertBefore(script, doc.head.firstChild);
                 else if (doc.body) doc.body.insertBefore(script, doc.body.firstChild);

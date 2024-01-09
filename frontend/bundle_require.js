@@ -1,7 +1,4 @@
 const jsYaml = require("js-yaml");
-jsYaml.safeDump = jsYaml.dump;
-jsYaml.safeLoad = jsYaml.load;
-jsYaml.safeLoadAll = jsYaml.loadAll;
 
 module.exports = {
     buffer: require("buffer"),
@@ -13,5 +10,34 @@ module.exports = {
     fs: require("./require_fs"),
     path: require("./require_path"),
     "./js/libs/greenworks": require("./require_greenworks"),
-    "./js/libs/js-yaml-master": jsYaml,
+};
+
+module.exports["./js/libs/js-yaml-master"] = {
+    ...jsYaml,
+    safeDump: jsYaml.dump,
+    safeLoad: jsYaml.load,
+    safeLoadAll: jsYaml.loadAll,
+};
+
+module.exports["os"] = {
+    platform: () => process.platform,
+};
+
+module.exports["nw.gui"] = window.nw = {
+    App: {
+        argv: process.env._ARGV,
+    },
+    Screen: {
+        Init: () => {},
+        on: () => {},
+    },
+    Window: {
+        get: () => {
+            return {
+                showDevTools: () => {},
+                closeDevTools: () => {},
+                on: () => {},
+            };
+        },
+    },
 };
