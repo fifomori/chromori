@@ -1,4 +1,5 @@
 const config = require("../config.json");
+const utils = require("./utils");
 
 /**
  * @param {import('express').Express} app
@@ -31,7 +32,6 @@ module.exports = (app) => {
 
     if (!greenworksInit) console.log("Using fallback achievements method");
 
-    // TODO: use status instead of result: false
     app.all("/api/steamworks/achievements/init", async (req, res) => {
         res.send({ result: greenworksInit });
     });
@@ -73,7 +73,7 @@ module.exports = (app) => {
         if (res.chromoriPath in fallbackAchievements) {
             res.send(fallbackAchievements[res.chromoriPath]);
         } else {
-            console.error("fallback getAchievementInfo failed: Achievement name is not valid");
+            console.error("fallback.getAchievementInfo failed: Achievement name is not valid");
             res.send({});
         }
     });
@@ -93,10 +93,10 @@ module.exports = (app) => {
         } else {
             if (res.chromoriPath in fallbackAchievements) {
                 config.achievements[res.chromoriPath] = true;
-                await utils.saveConfig(config);
+                await utils.config.save(config);
                 res.send({ result: true });
             } else {
-                console.error("fallback activateAchievement failed: Achievement name is not valid");
+                console.error("fallback.activateAchievement failed: Achievement name is not valid");
                 res.send({ result: false });
             }
         }

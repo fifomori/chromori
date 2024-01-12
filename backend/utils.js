@@ -12,11 +12,36 @@ module.exports = {
 
         return Buffer.concat([iv, cipherStream.update(Buffer.from(file, "utf8")), cipherStream.final()]);
     },
-    saveConfigSync(config) {
-        fs.writeFileSync(pp.join(process.cwd(), "config.json"), JSON.stringify(config, null, 4));
+    getDefaultPaths() {
+        switch (process.platform) {
+            case "win32":
+                return {
+                    root: "C:\\Program Files (x86)\\Steam\\steamapps\\common\\OMORI",
+                    config: pp.join(process.env.LOCALAPPDATA, "OMORI"),
+                };
+            default:
+                throw "Unsupported platform";
+        }
     },
-    async saveConfig(config) {
-        fs.writeFile(pp.join(process.cwd(), "config.json"), JSON.stringify(config, null, 4));
+    config: {
+        _validate(config) {
+            const paths = this.getDefaultPaths();
+
+            return {
+                key: config.key,
+                gamePath: config.gamePath || paths.root,
+                gameDirectory: config.gameDirectory || "www",
+                argv: config.argv || [],
+                achievements: config.achievements || [],
+                noSteam: config.noSteam || false,
+            };
+        },
+        saveSync(config) {
+            fs.writeFileSync(pp.join(process.cwd(), "config.json"), JSON.stringify(_validate(config), null, 4));
+        },
+        async save(config) {
+            fs.writeFile(pp.join(process.cwd(), "config.json"), JSON.stringify(_validate(config), null, 4));
+        },
     },
     fs: {
         ...require("fs/promises"),

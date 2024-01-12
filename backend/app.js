@@ -1,6 +1,6 @@
 console.clear();
 
-const config = require("../config.json"); // TODO: autocreate
+const config = require("../config.json");
 const getKey = require("./getKey");
 const utils = require("./utils");
 
@@ -16,7 +16,7 @@ if (!config.key) {
         if (key) {
             console.log("Found the OMORI process. Now you can close OMORI and start chromori");
             config.key = key;
-            utils.saveConfigSync(config);
+            utils.config.save(config);
             clearInterval(interval);
         }
     }, 2000);
