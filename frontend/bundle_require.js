@@ -34,10 +34,21 @@ module.exports["nw.gui"] = window.nw = {
     Window: {
         get: () => {
             return {
+                isFullscreen: false,
+                x: window.screenX,
+                y: window.screenY,
+                enterFullscreen: () => {},
+                leaveFullscreen: () => {},
                 showDevTools: () => {},
                 closeDevTools: () => {},
+                moveTo: () => {},
                 on: () => {},
             };
         },
+    },
+    Menu: class {
+        constructor() {
+            this.createMacBuiltin = () => {};
+        }
     },
 };

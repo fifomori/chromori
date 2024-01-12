@@ -39,6 +39,15 @@ if (!config.key) {
         next();
     });
 
+    const omoriPlatformSupport = process.platform === "win32" || process.platform === "darwin";
+    const omoriPathWin32 = utils.getDefaultPaths("win32");
+    const omoriPathPlatform = utils.getDefaultPaths(process.platform);
+
+    if (!omoriPlatformSupport) {
+        console.log("This platform isn't supported by OMORI");
+        console.log("chromori will fake it as win32 and fix some paths");
+    }
+
     const wwwPath = pp.join(config.gamePath, config.gameDirectory);
 
     app.use((req, res, next) => {
@@ -50,14 +59,20 @@ if (!config.key) {
 
         if (req.url.startsWith("/api/fs")) {
             let resolved = pp.resolve(res.chromoriPath);
-            // TODO: allowed base paths list
-            if (!resolved.startsWith(pp.join(process.env.LOCALAPPDATA, "OMORI"))) {
+            if (!resolved.startsWith(omoriPathPlatform.config)) {
                 let relative = pp.relative(config.gamePath, resolved);
                 if (relative.startsWith("..") || pp.isAbsolute(relative)) {
                     console.warn(`Blocked forbidden path '${res.chromoriPath}' => '${relative}'`);
                     res.status(403).end();
                     return;
                 }
+            }
+
+            if (!omoriPlatformSupport) {
+                if (res.chromoriPath.includes(omoriPathWin32.config))
+                    console.debug(`Fixing config path in ${res.chromoriPath}`);
+
+                res.chromoriPath.replace(omoriPathWin32.config);
             }
         }
 

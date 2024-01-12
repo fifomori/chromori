@@ -13,20 +13,30 @@ function encrypt(file) {
     return Buffer.concat([iv, cipherStream.update(Buffer.from(file, "utf8")), cipherStream.final()]);
 }
 
-function getDefaultPaths() {
-    switch (process.platform) {
+/**
+ * @param {typeof process.platform} platform
+ * @returns
+ */
+function getDefaultPaths(platform) {
+    switch (platform) {
         case "win32":
             return {
-                root: "C:\\Program Files (x86)\\Steam\\steamapps\\common\\OMORI",
+                root: pp.normalize("C:/Program Files (x86)/Steam/steamapps/common/OMORI"),
                 config: pp.join(process.env.LOCALAPPDATA, "OMORI"),
             };
+        case "darwin":
+            return {
+                root: pp.join(process.env.HOME, "Library/Application Support/Steam/steamapps/OMORI"),
+                config: pp.join(process.env.HOME, "Library/Preferences/com.omocat.omori"),
+            };
+        // TODO: linux
         default:
             throw "Unsupported platform";
     }
 }
 
 function validateConfig(config) {
-    const paths = getDefaultPaths();
+    const paths = getDefaultPaths(process.platform);
 
     return {
         key: config.key,
