@@ -39,14 +39,22 @@ if (!config.key) {
         next();
     });
 
+    const wwwPath = pp.join(config.gamePath, config.gameDirectory);
+
     app.use((req, res, next) => {
         res.chromoriPath = decodeURIComponent(req.headers["x-chromori-path"]);
+        // redirect relative paths to game directory
+        if (!pp.isAbsolute(res.chromoriPath)) {
+            res.chromoriPath = pp.join(wwwPath, res.chromoriPath);
+        }
+
         if (req.url.startsWith("/api/fs")) {
             let resolved = pp.resolve(res.chromoriPath);
             // TODO: allowed base paths list
             if (!resolved.startsWith(pp.join(process.env.LOCALAPPDATA, "OMORI"))) {
                 let relative = pp.relative(config.gamePath, resolved);
                 if (relative.startsWith("..") || pp.isAbsolute(relative)) {
+                    console.warn(`Blocked forbidden path '${res.chromoriPath}' => '${relative}'`);
                     res.status(403).end();
                     return;
                 }

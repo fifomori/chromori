@@ -4,7 +4,7 @@ const pp = require("path");
 const overlays = require("./overlays");
 const { fs, encrypt } = require("../utils");
 
-const wwwPath = pp.join(config.gamePath, "www");
+const wwwPath = pp.join(config.gamePath, config.gameDirectory);
 const filesPath = pp.join(__dirname, "files");
 
 module.exports = {

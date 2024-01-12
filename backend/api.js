@@ -5,12 +5,14 @@ const config = require("../config.json");
  */
 module.exports = (app) => {
     app.all("/api/env", async (req, res) => {
+        const keyArg = config.key === "test" ? "test" : `--${config.key}`;
         res.send({
             LOCALAPPDATA: process.env.LOCALAPPDATA,
             HOME: process.env.HOME,
             _PLATFORM: process.platform,
             _CWD: config.gamePath,
-            _ARGV: [`--${config.key}`, ...config.argv],
+            _ARGV: [keyArg, ...config.argv],
+            _CONFIG: config,
         });
     });
 
@@ -27,9 +29,7 @@ module.exports = (app) => {
         }
     }
 
-    if (!greenworksInit)
-        console.log("Using fallback achievements method");
-
+    if (!greenworksInit) console.log("Using fallback achievements method");
 
     // TODO: use status instead of result: false
     app.all("/api/steamworks/achievements/init", async (req, res) => {

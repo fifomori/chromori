@@ -6,7 +6,7 @@ const pp = require("path");
 const { fs } = require("./utils");
 const { resolveOverlay } = require("./overlay");
 
-const wwwPath = pp.join(config.gamePath, "www");
+const wwwPath = pp.join(config.gamePath, config.gameDirectory);
 const frontendPath = pp.join(process.cwd(), "frontend");
 
 /**
