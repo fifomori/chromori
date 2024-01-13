@@ -1,7 +1,0 @@
-{
-  "compilerOptions": {
-    "allowJs": true,
-    "outFile": "./lmao.js",
-    "module": "amd"
-  }
-}
