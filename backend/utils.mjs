@@ -3,14 +3,6 @@ import nfsp from "fs/promises";
 import pp from "path";
 import crypto from "crypto";
 
-export function encrypt(file) {
-    // copied from OneLoader
-    const iv = Buffer.from("EpicGamerMoment!");
-    const cipherStream = crypto.createCipheriv("aes-256-ctr", config.key, iv);
-
-    return Buffer.concat([iv, cipherStream.update(Buffer.from(file, "utf8")), cipherStream.final()]);
-}
-
 /**
  * @param {typeof process.platform} platform
  * @returns
@@ -98,17 +90,20 @@ export const config = {
     async save(config) {
         await nfsp.writeFile(configPath, createConfigJSON(config));
     },
-    saveSync(config) {
-        nfs.writeFileSync(configPath, createConfigJSON(config));
-    },
     async load() {
         if (!(await fs.exists(configPath))) await this.save();
         return JSON.parse(await nfsp.readFile(configPath, "utf8"));
     },
-    loadSync() {
-        if (!fs.existsSync(configPath)) this.saveSync();
-        return JSON.parse(nfs.readFileSync(configPath, "utf8"));
-    },
 };
+
+const iConfig = await config.load();
+
+export function encrypt(file) {
+    // copied from OneLoader
+    const iv = Buffer.from("EpicGamerMoment!");
+    const cipherStream = crypto.createCipheriv("aes-256-ctr", iConfig.key, iv);
+
+    return Buffer.concat([iv, cipherStream.update(Buffer.from(file, "utf8")), cipherStream.final()]);
+}
 
 export default { fs, config };

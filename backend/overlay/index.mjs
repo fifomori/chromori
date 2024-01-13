@@ -1,9 +1,7 @@
 import { join, basename } from "path";
 import overlays from "./overlays.mjs";
-import utils, { config as _config } from "../utils.mjs";
-const config = await _config.load();
-
-const { fs, encrypt } = utils;
+import { config as uConfig, fs, encrypt } from "../utils.mjs";
+const config = await uConfig.load();
 
 const wwwPath = join(config.gamePath, config.gameDirectory);
 const filesPath = join(process.cwd(), "backend/overlay/files");
