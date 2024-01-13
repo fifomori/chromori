@@ -24,7 +24,11 @@ export function getDefaultPaths(platform) {
             };
         case "darwin":
             return {
-                root: pp.join(process.env.HOME, "Library/Application Support/Steam/steamapps/OMORI"),
+                root: pp.join(
+                    process.env.HOME,
+                    "Library/Application Support/Steam/steamapps",
+                    "OMORI/OMORI.app/OMORI.app/Contents/Resources/app.nw"
+                ),
                 config: pp.join(process.env.HOME, "Library/Preferences/com.omocat.omori"),
             };
         // TODO: linux
