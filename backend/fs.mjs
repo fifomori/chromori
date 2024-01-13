@@ -39,7 +39,6 @@ export default (app) => {
             }
             return res.status(404).end();
         } catch (e) {
-            console.error("fs.readFile error");
             console.error(e);
         }
 
@@ -56,11 +55,12 @@ export default (app) => {
         }
     });
 
+    // TODO: json maybe
     app.all("/api/fs/readDir", async (req, res) => {
         try {
-            // TODO: json maybe
             res.send((await fs.readdir(res.chromoriPath)).join(":"));
         } catch (e) {
+            console.log(`fs.readDir: ${res.chromoriPath} is not a directory`);
             res.status(404).end();
         }
     });
@@ -90,6 +90,7 @@ export default (app) => {
             const stat = await fs.stat(res.chromoriPath);
             res.send(stat.isFile() ? "file" : "dir");
         } catch (e) {
+            console.log(`fs.stat: '${res.chromoriPath}' not found`);
             res.status(404).end();
         }
     });

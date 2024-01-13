@@ -19,15 +19,13 @@ OMORI in a browser
 
 1. Install dependencies
 
-   - Run `install.bat`
-
-1. Copy the `OMORI/www` folder to `chromori/www`
+   - Run `install.bat` or `./install.sh`
 
 # Running
 
 1. Run Steam (if you want to collect achievements)
-1. Run `app.bat`
-1. Open `http://localhost` in your browser
+1. Run `app.bat` or `./app.sh`
+1. Open `http://localhost:8000` in your browser
 
 # Compatibility
 
@@ -59,7 +57,6 @@ OneLoader state:
 - Test all greenworks binaries
 - Support darwin and linux
   - Build greenworks
-  - Write a getKey.js
 
 # Info
 

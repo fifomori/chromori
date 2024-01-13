@@ -35,7 +35,7 @@ export default (app) => {
             if (fileOverlay) {
                 return res.send(fileOverlay);
             } else {
-                const path = join(wwwPath, url);
+                const path = await fs.matchPath(join(wwwPath, url));
 
                 if (await fs.isFile(path)) {
                     if (extname(path) == ".wasm") res.contentType("application/wasm");

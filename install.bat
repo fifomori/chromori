@@ -7,7 +7,6 @@ popd
 
 pushd backend
 call pnpm i
-call pnpm build
 popd
 
 pause

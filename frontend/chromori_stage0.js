@@ -12,7 +12,7 @@ globalThis.chromori = {
         if (options.type) xhr.responseType = options.type;
 
         xhr.open("POST", this.apiUrl + method, true);
-        xhr.setRequestHeader("x-chromori-path", path);
+        if (path) xhr.setRequestHeader("x-chromori-path", path); // TODO: why no encode
         xhr.addEventListener("load", () => {
             if (xhr.status != 200) {
                 callback(xhr.status);
@@ -30,7 +30,7 @@ globalThis.chromori = {
         if (options.mime) xhr.overrideMimeType(options.mime);
 
         xhr.open("POST", this.apiUrl + method, false);
-        xhr.setRequestHeader("x-chromori-path", encodeURIComponent(path));
+        if (path) xhr.setRequestHeader("x-chromori-path", encodeURIComponent(path)); // TODO: why encode
         xhr.send(options.data);
 
         if (xhr.status != 200) {
@@ -44,7 +44,7 @@ globalThis.chromori = {
 
     decoder: new TextDecoder(),
     encoder: new TextEncoder(),
-    apiUrl: `http://${window.location.hostname}:80/api`,
+    apiUrl: `http://${window.location.hostname}:8000/api`,
 
     createAchievementElement: function (name, description, icon, id) {
         const el = document.createElement("div");

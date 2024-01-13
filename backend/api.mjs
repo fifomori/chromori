@@ -1,13 +1,12 @@
 import { config as uConfig } from "./utils.mjs";
 const config = await uConfig.load();
 
-import * as greenworks from "./greenworks/greenworks.js";
 import fallbackAchievements from "./fallbackAchievements.mjs";
 
 /**
  * @param {import('express').Express} app
  */
-export default (app) => {
+export default async (app) => {
     app.all("/api/env", async (req, res) => {
         const keyArg = config.key === "test" ? "test" : `--${config.key}`;
         res.send({
@@ -21,8 +20,11 @@ export default (app) => {
     });
 
     let greenworksInit = false;
+
+    let greenworks;
     if (!config.noSteam) {
         try {
+            greenworks = await import("./greenworks/greenworks.js");
             greenworksInit = greenworks.init();
             console.log("Connected to Steam");
         } catch (e) {

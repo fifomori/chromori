@@ -3,7 +3,7 @@ console.clear();
 import pp from "path";
 import express from "express";
 import getKey from "./getKey.mjs";
-import { config as uConfig, getDefaultPaths } from "./utils.mjs";
+import { config as uConfig, fs, getDefaultPaths } from "./utils.mjs";
 
 const config = await uConfig.load();
 
@@ -46,8 +46,11 @@ if (!config.key) {
         next();
     });
 
+    // stub path, will be replaced later on unsupported platforms
+    if (!process.env.LOCALAPPDATA) process.env.LOCALAPPDATA = "/chromori/localappdata";
+
     const omoriPlatformSupport = process.platform === "win32" || process.platform === "darwin";
-    const omoriPathWin32 = getDefaultPaths("win32");
+    const omoriPathDefault = getDefaultPaths("win32");
     const omoriPathPlatform = getDefaultPaths(process.platform);
 
     if (!omoriPlatformSupport) {
@@ -57,11 +60,23 @@ if (!config.key) {
 
     const wwwPath = pp.join(config.gamePath, config.gameDirectory);
 
-    app.use((req, res, next) => {
+    app.use(async (req, res, next) => {
+        if (!req.headers["x-chromori-path"]) return next();
+
         res.chromoriPath = decodeURIComponent(req.headers["x-chromori-path"]);
         // redirect relative paths to game directory
         if (!pp.isAbsolute(res.chromoriPath)) {
             res.chromoriPath = pp.join(wwwPath, res.chromoriPath);
+        }
+
+        // TODO: test if darwin can use unfixed paths
+        if (!omoriPlatformSupport) {
+            // if (res.chromoriPath.includes(omoriPathDefault.config))
+            //     console.debug(`Fixing config path in ${res.chromoriPath} => ${omoriPathPlatform.config}`);
+
+            res.chromoriPath = await fs.matchPath(
+                res.chromoriPath.replace(omoriPathDefault.config, omoriPathPlatform.config)
+            );
         }
 
         if (req.url.startsWith("/api/fs")) {
@@ -74,13 +89,6 @@ if (!config.key) {
                     return;
                 }
             }
-
-            if (!omoriPlatformSupport) {
-                if (res.chromoriPath.includes(omoriPathWin32.config))
-                    console.debug(`Fixing config path in ${res.chromoriPath}`);
-
-                res.chromoriPath.replace(omoriPathWin32.config);
-            }
         }
 
         next();
@@ -88,11 +96,11 @@ if (!config.key) {
 
     app.use(express.raw({ inflate: true, limit: "50mb", type: () => true }));
 
-    (await import("./api.mjs")).default(app);
+    await (await import("./api.mjs")).default(app);
     (await import("./fs.mjs")).default(app);
     (await import("./static.mjs")).default(app);
 
-    app.listen(80, "0.0.0.0", () => {
-        console.log("chromori is running on http://localhost:80");
+    app.listen(8000, "0.0.0.0", () => {
+        console.log("chromori is running on http://localhost:8000");
     });
 }
