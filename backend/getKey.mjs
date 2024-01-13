@@ -1,8 +1,7 @@
-const p = require("child_process");
+import p from "child_process";
 
-module.exports = {
-    // TODO: unix support
-    windows() {
+export default {
+    win32() {
         const wmic = p.spawnSync("wmic", "process where caption='OMORI.exe' get commandline".split(" "), {
             encoding: "ascii",
         });

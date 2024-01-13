@@ -12,7 +12,6 @@ const createStat = (status, type) => {
 
 const createErrorNoEnt = () => new Error(ERRNO_ENOENT);
 
-// TODO: refactor fetch
 // TODO: add console warning when async function called without callback
 
 module.exports = {

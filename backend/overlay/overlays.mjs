@@ -1,7 +1,7 @@
-const { JSDOM } = require("jsdom");
+import { JSDOM } from "jsdom";
 const DOMParser = new JSDOM().window.DOMParser;
 
-module.exports = {
+export default {
     "/index.html": {
         type: "custom",
         async patch(file) {

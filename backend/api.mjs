@@ -1,10 +1,13 @@
-const config = require("../config.json");
-const utils = require("./utils");
+import { config as uConfig } from "./utils.mjs";
+const config = await uConfig.load();
+
+import * as greenworks from "./greenworks/greenworks.js";
+import fallbackAchievements from "./fallbackAchievements.mjs";
 
 /**
  * @param {import('express').Express} app
  */
-module.exports = (app) => {
+export default (app) => {
     app.all("/api/env", async (req, res) => {
         const keyArg = config.key === "test" ? "test" : `--${config.key}`;
         res.send({
@@ -16,9 +19,6 @@ module.exports = (app) => {
             _CONFIG: config,
         });
     });
-
-    const greenworks = require("./greenworks/greenworks");
-    const fallbackAchievements = require("./achievements.json");
 
     let greenworksInit = false;
     if (!config.noSteam) {
@@ -93,7 +93,7 @@ module.exports = (app) => {
         } else {
             if (res.chromoriPath in fallbackAchievements) {
                 config.achievements[res.chromoriPath] = true;
-                await utils.config.save(config);
+                await uConfig.save(config);
                 res.send({ result: true });
             } else {
                 console.error("fallback.activateAchievement failed: Achievement name is not valid");

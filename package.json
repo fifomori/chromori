@@ -4,6 +4,6 @@
   "main": "app.js",
   "repository": "github:cafeed28/chromori",
   "scripts": {
-    "app": "node backend/app"
+    "app": "node backend/app.mjs"
   }
 }

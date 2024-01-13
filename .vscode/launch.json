@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Launch Program",
             "skipFiles": ["<node_internals>/**"],
-            "program": "${workspaceFolder}\\backend\\app.js",
+            "program": "${workspaceFolder}/backend/app.mjs",
             "runtimeArgs": ["--trace-warnings"]
         }
     ]

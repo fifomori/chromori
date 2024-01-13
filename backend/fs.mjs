@@ -1,17 +1,17 @@
-const config = require("../config.json");
+import { join } from "path";
 
-const pp = require("path");
-const { fs } = require("./utils");
-const { resolveOverlay } = require("./overlay");
+import { config as uConfig, fs } from "./utils.mjs";
+import { resolveOverlay } from "./overlay/index.mjs";
 
-const wwwPath = pp.join(config.gamePath, config.gameDirectory);
+const config = await uConfig.load();
+const wwwPath = join(config.gamePath, config.gameDirectory);
 
 /**
  * @param {import('express').Express} app
  */
-module.exports = (app) => {
+export default (app) => {
     app.all("/api/fs/readFile", async (req, res) => {
-        // see backend/static.js:23
+        // see backend/static.js:21
         // although i'm not sure if it's necessary here
         try {
             res.chromoriPath = decodeURIComponent(res.chromoriPath);

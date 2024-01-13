@@ -1,18 +1,17 @@
-const config = require("../config.json");
+import { join, extname } from "path";
 
-const express = require("express");
-const pp = require("path");
+import { config as uConfig, fs } from "./utils.mjs";
+import { resolveOverlay } from "./overlay/index.mjs";
+import express from "express";
 
-const { fs } = require("./utils");
-const { resolveOverlay } = require("./overlay");
-
-const wwwPath = pp.join(config.gamePath, config.gameDirectory);
-const frontendPath = pp.join(process.cwd(), "frontend");
+const config = await uConfig.load();
+const wwwPath = join(config.gamePath, config.gameDirectory);
+const frontendPath = join(process.cwd(), "frontend");
 
 /**
  * @param {import('express').Express} app
  */
-module.exports = (app) => {
+export default (app) => {
     app.use("/chromori", express.static(frontendPath));
     app.use("/.oneloader-image-cache", express.static(".oneloader-image-cache"));
     app.use("/", async (req, res) => {
@@ -36,10 +35,10 @@ module.exports = (app) => {
             if (fileOverlay) {
                 return res.send(fileOverlay);
             } else {
-                const path = pp.join(wwwPath, url);
+                const path = join(wwwPath, url);
 
                 if (await fs.isFile(path)) {
-                    if (pp.extname(path) == ".wasm") res.contentType("application/wasm");
+                    if (extname(path) == ".wasm") res.contentType("application/wasm");
                     return fs.createReadStream(path).pipe(res);
                 } else {
                     console.log(`static: '${path}' is not a file`);

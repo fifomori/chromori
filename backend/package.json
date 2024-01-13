@@ -1,5 +1,6 @@
 {
     "scripts": {},
+    "type": "module",
     "dependencies": {
         "express": "^4.18.2",
         "jsdom": "^22.1.0"
