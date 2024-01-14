@@ -64,16 +64,19 @@ module.exports = {
     },
 
     readdir(path, callback) {
-        chromori.fetch("/fs/readDir", path, (status, res) => {
-            const list = res.split(":");
-            callback(null, list);
-        });
+        chromori.fetch(
+            "/fs/readDir",
+            path,
+            (status, res) => {
+                callback(null, res.list);
+            },
+            { json: true }
+        );
     },
 
     readdirSync(path) {
-        let { res } = chromori.fetchSync("/fs/readDir", path);
-        res = res.split(":");
-        return res;
+        let { res } = chromori.fetchSync("/fs/readDir", path, { json: true });
+        return res.list;
     },
 
     // TODO: mkdir

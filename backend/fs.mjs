@@ -55,10 +55,9 @@ export default (app) => {
         }
     });
 
-    // TODO: json maybe
     app.all("/api/fs/readDir", async (req, res) => {
         try {
-            res.send((await fs.readdir(res.chromoriPath)).join(":"));
+            res.send({ list: await fs.readdir(res.chromoriPath) });
         } catch (e) {
             console.log(`fs.readDir: ${res.chromoriPath} is not a directory`);
             res.status(404).end();
