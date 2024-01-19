@@ -43,6 +43,7 @@ module.exports["nw.gui"] = window.nw = {
                 closeDevTools: () => {},
                 moveTo: () => {},
                 on: () => {},
+                focus: () => {},
             };
         },
     },

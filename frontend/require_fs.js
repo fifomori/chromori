@@ -114,7 +114,9 @@ module.exports = {
         chromori.fetch("/fs/rename", oldPath, callback, { data: newPath });
     },
 
-    // TODO: renameSync?
+    renameSync(oldPath, newPath) {
+        chromori.fetchSync("/fs/rename", oldPath, { data: newPath });
+    },
 
     // Stubs
     openSync() {},
