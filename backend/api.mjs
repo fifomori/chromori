@@ -25,7 +25,7 @@ export default async (app) => {
     if (!config.noSteam) {
         try {
             greenworks = await import("./greenworks/greenworks.js");
-            greenworksInit = greenworks.init();
+            greenworksInit = greenworks.default.init();
             console.log("Connected to Steam");
         } catch (e) {
             console.log("Failed to connect to Steam");
