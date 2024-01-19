@@ -36,7 +36,7 @@ OMORI in a browser
 
 # OneLoader ![hero_capitalism](.github/assets/warning.gif)
 
-- ## doesn't load .zip mods
+- doesn't load .zip mods
   - **WORKAROUND: unzip mods**
   - node_stream_zip using fs.open, which is hard to implement without WebSockets
   - TODO: rewrite fs async api to WebSockets
