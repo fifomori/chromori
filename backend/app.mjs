@@ -62,8 +62,13 @@ if (!config.key) {
 
     app.use(async (req, res, next) => {
         if (!req.headers["x-chromori-path"]) return next();
-
         res.chromoriPath = decodeURIComponent(req.headers["x-chromori-path"]);
+
+        // steamworks api uses path for achievement ids
+        if (req.url.startsWith("/api/steamworks")) {
+            return next();
+        }
+
         // redirect relative paths to game directory
         if (!pp.isAbsolute(res.chromoriPath)) {
             res.chromoriPath = pp.join(wwwPath, res.chromoriPath);
@@ -85,8 +90,7 @@ if (!config.key) {
                 let relative = pp.relative(config.gamePath, resolved);
                 if (relative.startsWith("..") || pp.isAbsolute(relative)) {
                     console.warn(`Blocked forbidden path '${res.chromoriPath}' => '${relative}'`);
-                    res.status(403).end();
-                    return;
+                    return res.status(403).end();
                 }
             }
         }
