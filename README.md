@@ -19,15 +19,13 @@ OMORI in a browser
 
 1. Install dependencies
 
-   - Run `install.bat`
-
-1. Copy the `OMORI/www` folder to `chromori/www`
+   - Run `install.bat` (Windows) or `./install.sh` (Linux, macOS)
 
 # Running
 
 1. Run Steam (if you want to collect achievements)
-1. Run `app.bat`
-1. Open `http://localhost` in your browser
+1. Run `app.bat` (Windows) or `./app.sh` (Linux, macOS)
+1. Open `http://localhost:8000` in your browser
 
 # Compatibility
 
@@ -36,29 +34,21 @@ OMORI in a browser
 - Firefox (tested with 119)
   - has some sound stutters on synchronus fs operations (mainly in menu)
 
-OneLoader is mostly supported
+# OneLoader ![hero_capitalism](.github/assets/warning.gif)
 
-OneLoader state:
-
-- patches all Node.js fs requests
-- patches all XHR requests
-- doesn't patch resource requests (fonts, some assets)
-  - OneLoader's vfs_web uses the Chrome Extensions API, which is unavailable for regular website
-  - workaround: replace these assets manually
 - doesn't load .zip mods
+  - **WORKAROUND: unzip mods**
   - node_stream_zip using fs.open, which is hard to implement without WebSockets
-  - however, using WebSockets makes it impossible to implement synchronous fs
-  - workaround: unzip mods
-  - TODO: patch OneLoader to prevent loading zips
-- maybe it will not update itself (but if it will, please don't do that)
+  - TODO: rewrite fs async api to WebSockets
+- dosesn't patch xhr requests (fonts, some assets)
+  - OneLoader's vfs_web uses the Chrome Extensions API, which is unavailable for regular website
+  - **WORKAROUND: replace these assets manually**
 
 # TODO
 
 - Publish prebuilt package
+- Build greenworks for linux and darwin
 - Test all greenworks binaries
-- Support darwin and linux
-  - Build greenworks
-  - Write a getKey.js
 
 # Info
 

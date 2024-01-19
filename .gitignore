@@ -1,10 +1,6 @@
 node_modules
 
-# OMORI files
-.oneloader-image-cache
-www*
-nowyouknow*
+# Config
+config.json
+config.*.json
 activatedAchievements.json
-
-argv
-key

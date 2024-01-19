@@ -1,10 +1,12 @@
 @echo off
 
-call pnpm i
-
-pushd web
+pushd frontend
 call pnpm i
 call pnpm build
+popd
+
+pushd backend
+call pnpm i
 popd
 
 pause

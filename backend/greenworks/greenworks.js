@@ -3,9 +3,12 @@
 // found in the LICENSE file.
 
 // The source code can be found in https://github.com/greenheartgames/greenworks
-var fs = require('fs');
+import { rename, readFileSync } from 'fs';
+import { resolve } from 'path';
+import { createRequire } from 'module';
 
-var greenworks;
+const require = createRequire(import.meta.url);
+let greenworks;
 
 if (process.platform == 'darwin') {
   greenworks = require('./greenworks-osx');
@@ -131,7 +134,7 @@ function file_share_process(file_name, image_name, next_process_func,
 // 3. publish the file to workshop.
 greenworks.ugcPublish = function(file_name, title, description, image_name,
     success_callback, error_callback, progress_callback) {
-  var publish_file_process = function() {
+  let publish_file_process = function() {
     if (progress_callback)
       progress_callback("Completed on sharing files.");
     greenworks.publishWorkshopFile(file_name, image_name, title, description,
@@ -151,7 +154,7 @@ greenworks.ugcPublish = function(file_name, title, description, image_name,
 greenworks.ugcPublishUpdate = function(published_file_id, file_name, title,
     description, image_name, success_callback, error_callback,
     progress_callback) {
-  var update_published_file_process = function() {
+  let update_published_file_process = function() {
     if (progress_callback)
       progress_callback("Completed on sharing files.");
     greenworks.updatePublishedWorkshopFile(published_file_id,
@@ -169,7 +172,7 @@ greenworks.ugcPublishUpdate = function(published_file_id, file_name, title,
 // Greenworks Utils APIs implmentation.
 greenworks.Utils.move = function(source_dir, target_dir, success_callback,
     error_callback) {
-  fs.rename(source_dir, target_dir, function(err) {
+  rename(source_dir, target_dir, function(err) {
     if (err) {
       if (error_callback) error_callback(err);
       return;
@@ -183,13 +186,13 @@ greenworks.init = function() {
   if (this.initAPI()) return true;
   if (!this.isSteamRunning())
     throw new Error("Steam initialization failed. Steam is not running.");
-  var appId;
+  let appId;
   try {
-    appId = fs.readFileSync('steam_appid.txt', 'utf8');
+    appId = readFileSync('steam_appid.txt', 'utf8');
   } catch (e) {
     throw new Error("Steam initialization failed. Steam is running," +
                     "but steam_appid.txt is missing. Expected to find it in: " +
-                    require('path').resolve('steam_appid.txt'));
+                    resolve('steam_appid.txt'));
   }
   if (!/^\d+ *\r?\n?$/.test(appId)) {
     throw new Error("Steam initialization failed. " +
@@ -201,7 +204,7 @@ greenworks.init = function() {
                   "Maybe that's not really YOUR app ID? " + appId.trim());
 }
 
-var EventEmitter = require('events').EventEmitter;
+import { EventEmitter } from 'events';
 greenworks.__proto__ = EventEmitter.prototype;
 EventEmitter.call(greenworks);
 
@@ -211,4 +214,4 @@ greenworks._steam_events.on = function () {
 
 process.versions['greenworks'] = greenworks._version;
 
-module.exports = greenworks;
+export default greenworks;
