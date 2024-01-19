@@ -49,6 +49,7 @@ OMORI in a browser
 - Publish prebuilt package
 - Build greenworks for linux and darwin
 - Test all greenworks binaries
+- Autoextract game path while getting key
 
 # Info
 
