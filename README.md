@@ -34,7 +34,7 @@ OMORI in a browser
 - Firefox (tested with 119)
   - has some sound stutters on synchronus fs operations (mainly in menu)
 
-# OneLoader ![hero_capitalism](.github/assets/warning.gif)
+# OneLoader ![warning](.github/assets/warning.gif)
 
 - doesn't load .zip mods
   - **WORKAROUND: unzip mods**
