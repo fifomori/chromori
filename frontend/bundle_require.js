@@ -1,7 +1,10 @@
 const jsYaml = require("js-yaml");
+const buffer = require("buffer");
+
+globalThis.Buffer = buffer.Buffer;
 
 module.exports = {
-    buffer: require("buffer"),
+    buffer: buffer,
     crypto: require("crypto-browserify"),
     events: require("events"),
     stream: require("stream"),

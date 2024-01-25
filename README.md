@@ -14,8 +14,8 @@ OMORI in a browser
 
 1. Clone this repo
 
-   - With Git: `git clone https://github.com/cafeed28/chromori`
-   - Or [download .zip](https://github.com/cafeed28/chromori/archive/refs/heads/main.zip) and unzip it
+   - With Git: `git clone https://github.com/fifomori/chromori`
+   - Or [download .zip](https://github.com/fifomori/chromori/archive/refs/heads/main.zip) and unzip it
 
 1. Install dependencies
 
