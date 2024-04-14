@@ -1,9 +1,9 @@
 {
-  "name": "chromori",
-  "version": "1.0.0",
-  "main": "app.js",
-  "repository": "github:cafeed28/chromori",
-  "scripts": {
-    "app": "node backend/app.mjs"
-  }
+    "name": "chromori",
+    "version": "1.0.0",
+    "main": "app.js",
+    "repository": "github:cafeed28/chromori",
+    "scripts": {
+        "app": "node backend/app.mjs"
+    }
 }
