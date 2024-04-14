@@ -59,7 +59,6 @@
         height: 44px;
         float: left;
         margin: 13px 16px 13px 10px;
-        background-image: url('https://cdn.cloudflare.steamstatic.com/steamcommunity/public/images/apps/1150690/4e50f8a9ce8a4f412042165032dfdd54a4f931f2.jpg');
         background-size: cover;
     }`;
     document.head.appendChild(style);

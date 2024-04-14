@@ -21,7 +21,7 @@ export default {
             key = key.map((l) => l.filter((l) => l.startsWith("--"))); // only --args
             key = [].concat(...key); // convert to flat array
             key = key.map((l) => l.replace("--", "")); // remove -- from all args
-            key = key.filter((l) => l.length == 32); // omori's decryption key is 32 bytes long
+            key = key.filter((l) => l.length == 32 && l.match(/^[A-Za-z0-9]+$/g)); // omori's decryption key is alphanumeric and 32 bytes long
             key = key.pop(); // and finally get it
 
             return key;
@@ -49,7 +49,7 @@ export default {
             key = key.map((l) => l.filter((l) => l.startsWith("--") && l.includes("nwjs"))); // only --args
             key = [].concat(...key); // convert to flat array
             key = key.map((l) => l.replace("--", "")); // remove -- from all args
-            key = key.filter((l) => l.length == 32); // omori's decryption key is 32 bytes long
+            key = key.filter((l) => l.length == 32 && l.match(/^[A-Za-z0-9]+$/g)); // omori's decryption key is alphanumeric and 32 bytes long
             key = key.pop(); // and finally get it
 
             return key;
