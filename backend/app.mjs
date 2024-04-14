@@ -5,6 +5,10 @@ import express from "express";
 import getKey from "./getKey.mjs";
 import { config as uConfig, fs, getDefaultPaths } from "./utils.mjs";
 
+import registerApi from "./api.mjs";
+import registerFs from "./fs.mjs";
+import registerStatic from "./static.mjs";
+
 const config = await uConfig.load();
 
 if (!config.key) {
@@ -100,9 +104,9 @@ if (!config.key) {
 
     app.use(express.raw({ inflate: true, limit: "50mb", type: () => true }));
 
-    await (await import("./api.mjs")).default(app);
-    (await import("./fs.mjs")).default(app);
-    (await import("./static.mjs")).default(app);
+    await registerApi(app);
+    registerFs(app);
+    registerStatic(app);
 
     app.listen(8000, "0.0.0.0", () => {
         console.log("chromori is running on http://localhost:8000");
