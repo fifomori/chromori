@@ -29,32 +29,32 @@ export default {
             return doc.documentElement.innerHTML;
         },
     },
-    // "/js/plugins.js": {
-    //     type: "merge",
-    //     fileName: "plugins.js",
-    //     merge(original, custom) {
-    //         return `${original};${custom}`;
-    //     },
-    // },
-    // "/js/plugins/chromori_oneloader_patches.omori": {
-    //     type: "replace",
-    //     fileName: "chromori_oneloader_patches.js",
-    //     encrypt: true,
-    // },
-    // "/js/plugins/chromori_plugins_patches.omori": {
-    //     type: "replace",
-    //     fileName: "chromori_plugins_patches.js",
-    //     encrypt: true,
-    // },
-    // // OneLoader playtest mode
-    // "/js/plugins/chromori_oneloader_patches.js": {
-    //     type: "replace",
-    //     fileName: "chromori_oneloader_patches.js",
-    // },
-    // "/js/plugins/chromori_plugins_patches.js": {
-    //     type: "replace",
-    //     fileName: "chromori_plugins_patches.js",
-    // },
+    "/js/plugins.js": {
+        type: "merge",
+        fileName: "plugins.js",
+        merge(original, custom) {
+            return `${original};${custom}`;
+        },
+    },
+    "/js/plugins/chromori_oneloader_patches.omori": {
+        type: "replace",
+        fileName: "chromori_oneloader_patches.js",
+        encrypt: true,
+    },
+    "/js/plugins/chromori_plugins_patches.omori": {
+        type: "replace",
+        fileName: "chromori_plugins_patches.js",
+        encrypt: true,
+    },
+    // OneLoader playtest mode
+    "/js/plugins/chromori_oneloader_patches.js": {
+        type: "replace",
+        fileName: "chromori_oneloader_patches.js",
+    },
+    "/js/plugins/chromori_plugins_patches.js": {
+        type: "replace",
+        fileName: "chromori_plugins_patches.js",
+    },
     "/modloader/early_loader.js": {
         type: "custom",
         async patch(file) {
