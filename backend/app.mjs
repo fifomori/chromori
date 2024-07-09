@@ -1,8 +1,9 @@
 console.clear();
 
+import timers from "timers/promises";
 import pp from "path";
 import express from "express";
-import getKey from "./getKey.mjs";
+import generateConfig from "./generateConfig.mjs";
 import { config as uConfig, fs, getDefaultPaths } from "./utils.mjs";
 
 import registerApi from "./api.mjs";
@@ -11,29 +12,39 @@ import registerStatic from "./static.mjs";
 
 const config = await uConfig.load();
 
-if (!config.key) {
+if (!config.key || !config.gamePath) {
     console.log("Looks like you running chromori first time");
-    console.log("chromori needs to get a decryption key");
+    console.log("chromori needs to get a decryption key and game directory path");
+
+    const generateConfigFn = generateConfig[process.platform];
+    if (!generateConfigFn) {
+        console.error(`Cannot generate default config: unsupported platform (${process.platform})`);
+        console.error("You can get decryption key and game directory path manually and put it to config.json");
+        process.exit(1);
+    }
+
     console.log("Launch OMORI from Steam");
     console.log();
 
-    const interval = setInterval(() => {
+    for await (const _ of timers.setInterval(2000)) {
         console.log("Waiting for OMORI process...");
-        const getKeyFn = getKey[process.platform];
-        if (!getKeyFn) {
-            console.error(`Cannot get decryption key: unsupported platform (${process.platform})`);
-            console.error("You can get decryption key manually and put it to config.json");
-            process.exit(1);
-        }
 
-        const key = getKeyFn();
-        if (key) {
-            console.log("Found the OMORI process. Now you can close OMORI and start chromori");
-            config.key = key;
-            uConfig.save(config);
-            clearInterval(interval);
+        try {
+            const generatedConfig = await generateConfigFn();
+            if (generatedConfig) {
+                console.log("Found the OMORI process. Now you can close OMORI and start chromori again");
+                config.key = generatedConfig.key;
+                config.gamePath = generatedConfig.gamePath;
+
+                await uConfig.save(config);
+                break;
+            }
+        } catch (e) {
+            console.error("An error happened while generating a default config");
+            console.error(e);
+            break;
         }
-    }, 2000);
+    }
 } else {
     const app = express();
     app.set("etag", false);

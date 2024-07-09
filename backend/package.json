@@ -2,6 +2,7 @@
     "scripts": {},
     "type": "module",
     "dependencies": {
+        "@intelcorp/wmi-native-module": "^1.0.1",
         "express": "^4.19.2",
         "jsdom": "^24.0.0"
     },

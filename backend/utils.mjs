@@ -118,11 +118,9 @@ export function getDefaultPaths(platform) {
 }
 
 function createConfigJSON(config = {}) {
-    const paths = getDefaultPaths(process.platform);
-
     const res = {
-        key: config.key,
-        gamePath: config.gamePath || paths.root,
+        key: config.key || "",
+        gamePath: config.gamePath || "",
         gameDirectory: config.gameDirectory || "www",
         argv: config.argv || [],
         achievements: config.achievements || [],
