@@ -45,6 +45,8 @@ module.exports["nw.gui"] = window.nw = {
                 showDevTools: () => {},
                 closeDevTools: () => {},
                 moveTo: () => {},
+                moveBy: () => {},
+                resizeBy: () => {},
                 on: () => {},
                 focus: () => {},
             };
