@@ -8,15 +8,16 @@ importers:
 
   .:
     dependencies:
-      '@intelcorp/wmi-native-module':
-        specifier: ^1.0.1
-        version: 1.0.1
       express:
         specifier: ^4.19.2
         version: 4.19.2
       jsdom:
         specifier: ^24.0.0
         version: 24.0.0
+    optionalDependencies:
+      '@intelcorp/wmi-native-module':
+        specifier: ^1.0.1
+        version: 1.0.1
     devDependencies:
       '@types/express':
         specifier: ^4.17.21
@@ -478,6 +479,7 @@ snapshots:
   '@intelcorp/wmi-native-module@1.0.1':
     dependencies:
       node-addon-api: 7.1.0
+    optional: true
 
   '@types/body-parser@1.19.5':
     dependencies:
@@ -803,7 +805,8 @@ snapshots:
 
   negotiator@0.6.3: {}
 
-  node-addon-api@7.1.0: {}
+  node-addon-api@7.1.0:
+    optional: true
 
   nwsapi@2.2.7: {}
 

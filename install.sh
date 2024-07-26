@@ -6,5 +6,5 @@ pnpm build
 popd
 
 pushd backend
-pnpm i
+pnpm i --no-optional
 popd
