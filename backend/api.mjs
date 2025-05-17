@@ -2,7 +2,7 @@ import { config as uConfig } from "./utils.mjs";
 const config = await uConfig.load();
 
 import fallbackAchievements from "./fallbackAchievements.mjs";
-import steamworks from "../../steamworks.js/index.js"
+import steamworks from "steamworks.js"
 
 /**
  * @param {import('express').Express} app
