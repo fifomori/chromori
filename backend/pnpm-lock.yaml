@@ -14,10 +14,6 @@ importers:
       jsdom:
         specifier: ^24.0.0
         version: 24.0.0
-    optionalDependencies:
-      '@intelcorp/wmi-native-module':
-        specifier: ^1.0.1
-        version: 1.0.1
     devDependencies:
       '@types/express':
         specifier: ^4.17.21
@@ -28,6 +24,10 @@ importers:
       '@types/node':
         specifier: ^20.12.7
         version: 20.12.7
+    optionalDependencies:
+      '@intelcorp/wmi-native-module':
+        specifier: ^1.0.1
+        version: 1.0.1
 
 packages:
 

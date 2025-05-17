@@ -2,6 +2,7 @@ import { config as uConfig } from "./utils.mjs";
 const config = await uConfig.load();
 
 import fallbackAchievements from "./fallbackAchievements.mjs";
+import steamworks from "../../steamworks.js/index.js"
 
 /**
  * @param {import('express').Express} app
@@ -19,54 +20,32 @@ export default async (app) => {
         });
     });
 
-    let greenworksInit = false;
-
-    let greenworks;
-    if (!config.noSteam) {
-        try {
-            const gw = await import("./greenworks/greenworks.js");
-            greenworks = gw.default;
-            greenworksInit = greenworks.init();
-            console.log("Connected to Steam");
-        } catch (e) {
-            console.log("Failed to connect to Steam");
-        }
-    }
-
-    if (!greenworksInit) console.log("Using fallback achievements method");
+    let client = config.noSteam ? null : steamworks.init(1150690);
+    const steamworksInit = !!client
 
     app.all("/api/steamworks/achievements/init", async (req, res) => {
-        res.send({ result: greenworksInit });
+        res.send({ result: !!client });
     });
 
     app.all("/api/steamworks/achievements/count", async (req, res) => {
-        if (greenworksInit) {
-            res.send({ number: greenworks.getNumberOfAchievements() });
+        if (steamworksInit) {
+            res.send({ number: client.achievement.names().length });
         } else {
             res.send({ number: Object.keys(fallbackAchievements).length });
         }
     });
 
     app.all("/api/steamworks/achievements/list", async (req, res) => {
-        if (greenworksInit) {
-            res.send({ achievements: greenworks.getAchievementNames() });
+        if (steamworksInit) {
+            res.send({ achievements: client.achievement.names()});
         } else {
             res.send({ achievements: Object.keys(fallbackAchievements) });
         }
     });
 
     app.all("/api/steamworks/achievements/get", async (req, res) => {
-        if (greenworksInit) {
-            greenworks.getAchievement(
-                res.chromoriPath,
-                (isAchieved) => {
-                    res.send({ result: isAchieved });
-                },
-                (e) => {
-                    console.error(`greenworks.getAchievement failed: ${e}`);
-                    res.send({ result: false });
-                }
-            );
+        if (steamworksInit) {
+            client.achievement.isActivated(res.chromoriPath);
         } else {
             res.send({ result: !!config.achievements[res.chromoriPath] });
         }
@@ -82,17 +61,9 @@ export default async (app) => {
     });
 
     app.all("/api/steamworks/achievements/activate", async (req, res) => {
-        if (greenworksInit) {
-            greenworks.activateAchievement(
-                res.chromoriPath,
-                () => {
-                    res.send({ result: true });
-                },
-                (e) => {
-                    console.error(`greenworks.activateAchievement failed: ${e}`);
-                    res.send({ result: false });
-                }
-            );
+        if (steamworksInit) {
+            client.achievement.activate(res.chromoriPath)
+            res.send({ result: true });
         } else {
             if (res.chromoriPath in fallbackAchievements) {
                 config.achievements[res.chromoriPath] = true;
