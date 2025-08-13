@@ -37,7 +37,7 @@ export default async (app) => {
 
     app.all("/api/steamworks/achievements/get", async (req, res) => {
         if (steamworksInit) {
-            client.achievement.isActivated(res.chromoriPath);
+            res.send({ result: client.achievement.isActivated(res.chromoriPath) });
         } else {
             res.send({ result: !!config.achievements[res.chromoriPath] });
         }
