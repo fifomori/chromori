@@ -15,8 +15,8 @@ importers:
         specifier: ^24.0.0
         version: 24.0.0
       steamworks.js:
-        specifier: github:Luc-Mcgrady/steamworks.js
-        version: https://codeload.github.com/Luc-Mcgrady/steamworks.js/tar.gz/9735d6a8f752e40356d8ecac05c158ddfed346c8
+        specifier: 0.4.0
+        version: 0.4.0
     devDependencies:
       '@types/express':
         specifier: ^4.17.21
@@ -397,9 +397,8 @@ packages:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
 
-  steamworks.js@https://codeload.github.com/Luc-Mcgrady/steamworks.js/tar.gz/9735d6a8f752e40356d8ecac05c158ddfed346c8:
-    resolution: {tarball: https://codeload.github.com/Luc-Mcgrady/steamworks.js/tar.gz/9735d6a8f752e40356d8ecac05c158ddfed346c8}
-    version: 0.4.0
+  steamworks.js@0.4.0:
+    resolution: {integrity: sha512-O5TTRs7ucCRql4IA/kYUIQYeghTsXqf3rAm81sC22RDId264LQYqQjuaMEUSqL60I5LdULiGu0W2/A+ZDcKBKA==}
     engines: {node: '>= 14'}
 
   symbol-tree@3.2.4:
@@ -912,7 +911,7 @@ snapshots:
 
   statuses@2.0.1: {}
 
-  steamworks.js@https://codeload.github.com/Luc-Mcgrady/steamworks.js/tar.gz/9735d6a8f752e40356d8ecac05c158ddfed346c8:
+  steamworks.js@0.4.0:
     dependencies:
       '@types/node': 20.12.7
 

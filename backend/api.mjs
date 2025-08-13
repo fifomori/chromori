@@ -28,19 +28,11 @@ export default async (app) => {
     });
 
     app.all("/api/steamworks/achievements/count", async (req, res) => {
-        if (steamworksInit) {
-            res.send({ number: client.achievement.names().length });
-        } else {
-            res.send({ number: Object.keys(fallbackAchievements).length });
-        }
+        res.send({ number: Object.keys(fallbackAchievements).length });
     });
 
     app.all("/api/steamworks/achievements/list", async (req, res) => {
-        if (steamworksInit) {
-            res.send({ achievements: client.achievement.names()});
-        } else {
-            res.send({ achievements: Object.keys(fallbackAchievements) });
-        }
+        res.send({ achievements: Object.keys(fallbackAchievements) });
     });
 
     app.all("/api/steamworks/achievements/get", async (req, res) => {
