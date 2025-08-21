@@ -5,5 +5,6 @@
     "repository": "github:cafeed28/chromori",
     "scripts": {
         "app": "node backend/app.mjs"
-    }
+    },
+    "packageManager": "pnpm@10.8.0"
 }
