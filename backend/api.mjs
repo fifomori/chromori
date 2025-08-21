@@ -2,7 +2,7 @@ import { config as uConfig } from "./utils.mjs";
 const config = await uConfig.load();
 
 import fallbackAchievements from "./fallbackAchievements.mjs";
-import steamworks from "steamworks.js"
+import steamworks from "steamworks.js";
 
 /**
  * @param {import('express').Express} app
@@ -21,7 +21,7 @@ export default async (app) => {
     });
 
     let client = config.noSteam ? null : steamworks.init(1150690);
-    const steamworksInit = !!client
+    const steamworksInit = !!client;
 
     app.all("/api/steamworks/achievements/init", async (req, res) => {
         res.send({ result: steamworksInit });
@@ -54,7 +54,7 @@ export default async (app) => {
 
     app.all("/api/steamworks/achievements/activate", async (req, res) => {
         if (steamworksInit) {
-            client.achievement.activate(res.chromoriPath)
+            client.achievement.activate(res.chromoriPath);
             res.send({ result: true });
         } else {
             if (res.chromoriPath in fallbackAchievements) {
