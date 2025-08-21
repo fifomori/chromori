@@ -2,32 +2,60 @@ import p from "child_process";
 import path from "path";
 import { getDefaultPaths } from "./utils.mjs";
 
+// https://stackoverflow.com/a/48480895
+function parseArgv(str) {
+    return str.split(" ").reduce(
+        (accum, curr) => {
+            if (accum.isConcatting) {
+                accum.soFar[accum.soFar.length - 1] += " " + curr;
+            } else {
+                accum.soFar.push(curr);
+            }
+            if (curr.split('"').length % 2 == 0) {
+                accum.isConcatting = !accum.isConcatting;
+            }
+            return accum;
+        },
+        { soFar: [], isConcatting: false }
+    ).soFar;
+}
+
+const KEY_REGEX = /^[A-Za-z0-9]+$/g;
+
+// TODO unify
 export default {
     async win32() {
-        const wmi = (await import("@intelcorp/wmi-native-module")).default;
-
-        const properties = ["CommandLine", "ExecutablePath"];
-        const query = `SELECT ${properties.join(",")} FROM Win32_Process WHERE Caption='OMORI.exe'`;
-        const result = wmi.query("root/cimv2", query, properties);
-
-        for (const entry of Object.values(result)) {
-            if (typeof entry.CommandLine !== "string" || typeof entry.ExecutablePath !== "string") continue;
-            const arg = entry.CommandLine.split(" ").find((v) => {
-                return (
-                    v.startsWith("--") &&
-                    v.slice(2).match(/^[A-Za-z0-9]+$/g) && // alphanumeric
-                    v.length == 34 // '--' + 32 bytes key
-                );
-            });
-
-            if (arg) {
-                const key = arg.slice(2);
-                const gamePath = path.parse(entry.ExecutablePath).dir;
-
-                return { key, gamePath };
-            }
+        const wmic = p.spawnSync("wmic", "process where Caption='OMORI.exe' get CommandLine".split(" "), {
+            encoding: "ascii",
+        });
+        if (wmic.stderr || wmic.error) {
+            throw wmic.stderr;
         }
-        return null;
+
+        const commandLines = wmic.stdout
+            .split("\n")
+            .slice(1) // remove wmic's first line "CommandLine"
+            .map((l) => l.trim()) // fix wmic weird newlines and tabs
+            .filter(Boolean); // remove empty lines
+
+        const result = { key: undefined, gamePath: getDefaultPaths("win32").root };
+
+        for (const commandLine of commandLines) {
+            const argv = parseArgv(commandLine);
+
+            argv.forEach((arg, i) => {
+                if (i == 0 && arg.endsWith("OMORI.exe")) {
+                    result.gamePath = path.dirname(arg);
+                } else if (arg.startsWith("--")) {
+                    const key = arg.replace("--", "");
+                    if (key.length == 32 && key.match(KEY_REGEX)) {
+                        result.key = key;
+                    }
+                }
+            });
+        }
+
+        return result;
     },
     async darwin() {
         const ps = p.spawnSync("ps", "-e -o command".split(" "), {
