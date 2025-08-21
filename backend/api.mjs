@@ -24,7 +24,7 @@ export default async (app) => {
     const steamworksInit = !!client
 
     app.all("/api/steamworks/achievements/init", async (req, res) => {
-        res.send({ result: !!client });
+        res.send({ result: steamworksInit });
     });
 
     app.all("/api/steamworks/achievements/count", async (req, res) => {
